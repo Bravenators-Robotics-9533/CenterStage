@@ -38,8 +38,11 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 /*
@@ -58,12 +61,21 @@ import com.qualcomm.robotcore.util.Range;
 @Autonomous(name="Concept: Auto Intake Servo Clamp", group="Concept")
 public class ConceptAutoIntakeServoClamp extends LinearOpMode {
 
+    private Servo clampServo;
     private RevColorSensorV3 colorSensorV3;
+
+    private static final double OPEN_POS = 0.85;
+    private static final double CLOSE_POS = 0.75;
+
+    private static boolean isOpen = true;
 
     @Override
     public void runOpMode() {
 
-        this.colorSensorV3 = hardwareMap.get(RevColorSensorV3.class, "color");
+        this.colorSensorV3  = hardwareMap.get(RevColorSensorV3.class, "color");
+        this.clampServo     = hardwareMap.get(Servo.class, "clamp");
+
+        this.clampServo.setPosition(OPEN_POS);
 
         telemetry.addData("Status", "Initialized");
 
@@ -71,14 +83,19 @@ public class ConceptAutoIntakeServoClamp extends LinearOpMode {
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
+
+        boolean shouldClose = false;
+
         while (opModeIsActive()) {
 
-            NormalizedRGBA colors = colorSensorV3.getNormalizedColors();
+            double distance = colorSensorV3.getDistance(DistanceUnit.MM);
 
-            telemetry.addData("alpha", colors.alpha);
-            telemetry.addData("red", colors.red);
-            telemetry.addData("green", colors.green);
-            telemetry.addData("blue", colors.blue);
+            if (distance < 22.0 && !shouldClose) {
+                shouldClose = true;
+                clampServo.setPosition(CLOSE_POS);
+            }
+
+            telemetry.addData("Distance", distance);
             telemetry.update();
 
         }
