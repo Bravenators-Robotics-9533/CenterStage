@@ -59,6 +59,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 
 @Autonomous(name="Concept: Auto Intake Servo Clamp", group="Concept")
+@Disabled
 public class ConceptAutoIntakeServoClamp extends LinearOpMode {
 
     private Servo clampServo;
@@ -72,7 +73,7 @@ public class ConceptAutoIntakeServoClamp extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        this.colorSensorV3  = hardwareMap.get(RevColorSensorV3.class, "color");
+        this.colorSensorV3  = hardwareMap.get(RevColorSensorV3.class, "pouchSensor");
         this.clampServo     = hardwareMap.get(Servo.class, "clamp");
 
         this.clampServo.setPosition(OPEN_POS);

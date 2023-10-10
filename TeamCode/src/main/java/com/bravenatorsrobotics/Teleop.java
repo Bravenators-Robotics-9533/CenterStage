@@ -1,5 +1,6 @@
 package com.bravenatorsrobotics;
 
+import com.bravenatorsrobotics.components.PixelPouchComponent;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -20,6 +21,8 @@ public class Teleop extends LinearOpMode {
 
     private MecanumDrive drive;
 
+    private PixelPouchComponent pixelPouchComponent;
+
     private boolean isSlowModeActive = false;
     private boolean shouldUseMasterController = false;
     private double offsetHeading = 0;
@@ -31,6 +34,9 @@ public class Teleop extends LinearOpMode {
 
         this.drive = new MecanumDrive(super.hardwareMap);
         this.drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        this.pixelPouchComponent = new PixelPouchComponent(this.hardwareMap);
+        this.pixelPouchComponent.initialize();
 
     }
 
@@ -49,6 +55,8 @@ public class Teleop extends LinearOpMode {
         while (opModeIsActive()) {
 
             this.handleDrive();
+
+            this.pixelPouchComponent.update();
 
             driverGamePad.update();
             operatorGamePad.update();
