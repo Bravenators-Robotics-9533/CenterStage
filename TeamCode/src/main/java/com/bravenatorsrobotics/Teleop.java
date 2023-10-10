@@ -1,5 +1,6 @@
 package com.bravenatorsrobotics;
 
+import com.bravenatorsrobotics.components.IntakeComponent;
 import com.bravenatorsrobotics.components.PixelPouchComponent;
 import com.bravenatorsrobotics.eventSystem.Callback;
 import com.bravenatorsrobotics.gamepad.FtcGamePad;
@@ -21,6 +22,7 @@ public class Teleop extends LinearOpMode {
 
     private MecanumDrive drive;
 
+    private IntakeComponent intakeComponent;
     private PixelPouchComponent pixelPouchComponent;
 
     private boolean isSlowModeActive = false;
@@ -36,7 +38,9 @@ public class Teleop extends LinearOpMode {
         this.drive = new MecanumDrive(super.hardwareMap);
         this.drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        this.pixelPouchComponent = new PixelPouchComponent(this.hardwareMap);
+        this.intakeComponent = new IntakeComponent(super.hardwareMap);
+
+        this.pixelPouchComponent = new PixelPouchComponent(super.hardwareMap);
         this.pixelPouchComponent.addOnClampCallback(this::triggerPixelClampedRumble);
         this.pixelPouchComponent.initialize();
 
@@ -90,6 +94,31 @@ public class Teleop extends LinearOpMode {
 
         if(shouldUseMasterController) // Forward Controls to Driver
             this.OnDriverGamePadChange(gamepad, button, isPressed);
+
+        boolean shouldStopIntake = true;
+
+        switch(button) {
+
+            case FtcGamePad.GAMEPAD_A:
+                if(isPressed) {
+                    intakeComponent.runIntakeForward();
+                    shouldStopIntake = false;
+                }
+
+                break;
+
+            case FtcGamePad.GAMEPAD_Y:
+                if(isPressed) {
+                    intakeComponent.runIntakeBackwards();
+                    shouldStopIntake = false;
+                }
+
+                break;
+        }
+
+        if(shouldStopIntake && !intakeComponent.isRunning()) {
+            this.intakeComponent.stopIntakeMotor();
+        }
 
     }
 
