@@ -1,6 +1,8 @@
 package com.bravenatorsrobotics.components;
 
 import com.bravenatorsrobotics.HardwareMapIdentities;
+import com.bravenatorsrobotics.eventSystem.Callback;
+import com.bravenatorsrobotics.eventSystem.CallbackSystem;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -15,6 +17,8 @@ public class PixelPouchComponent {
 
     private static final double POUCH_SENSOR_DISTANCE = 22.0;
     private static final double RELEASE_WAIT_SECONDS = 0.75;
+
+    private final CallbackSystem onClampCallbackSystem = new CallbackSystem();
 
     private final Servo clampServo;
     private final RevColorSensorV3 pouchColorSensor;
@@ -68,6 +72,8 @@ public class PixelPouchComponent {
             this.clampServo.setPosition(CLAMP_CLOSE_POSITION);
             this.isOpen = false;
 
+            this.onClampCallbackSystem.fireCallback();
+
         }
 
     }
@@ -77,5 +83,8 @@ public class PixelPouchComponent {
     public boolean isPixelDetected() {
         return this.pouchColorSensor.getDistance(DistanceUnit.MM) <= POUCH_SENSOR_DISTANCE;
     }
+
+    public void addOnClampCallback(Callback callback) { this.onClampCallbackSystem.addCallback(callback); }
+    public void removeOnClampCallback(Callback callback) { this.onClampCallbackSystem.removeCallback(callback); }
 
 }

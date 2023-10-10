@@ -1,4 +1,4 @@
-package com.bravenatorsrobotics;
+package com.bravenatorsrobotics.gamepad;
 
 import com.qualcomm.robotcore.hardware.Gamepad;
 
@@ -495,6 +495,11 @@ public class FtcGamePad
     {
         return getRightStickDirectionDegrees(false);
     }   //getRightStickDirectionDegrees
+
+    public Gamepad getRawGamepad()
+    {
+        return this.gamepad;
+    }
 
     /**
      * This method returns the square of the given value.

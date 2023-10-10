@@ -1,11 +1,11 @@
 package com.bravenatorsrobotics;
 
 import com.bravenatorsrobotics.components.PixelPouchComponent;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.bravenatorsrobotics.eventSystem.Callback;
+import com.bravenatorsrobotics.gamepad.FtcGamePad;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import roadrunner.drive.MecanumDrive;
@@ -25,6 +25,7 @@ public class Teleop extends LinearOpMode {
 
     private boolean isSlowModeActive = false;
     private boolean shouldUseMasterController = false;
+
     private double offsetHeading = 0;
 
     private void Initialize() {
@@ -36,6 +37,7 @@ public class Teleop extends LinearOpMode {
         this.drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         this.pixelPouchComponent = new PixelPouchComponent(this.hardwareMap);
+        this.pixelPouchComponent.addOnClampCallback(this::triggerPixelClampedRumble);
         this.pixelPouchComponent.initialize();
 
     }
@@ -64,7 +66,35 @@ public class Teleop extends LinearOpMode {
         }
     }
 
+    private void OnDriverGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
+
+        switch (button) {
+
+            case FtcGamePad.GAMEPAD_BACK:
+                if(isPressed)
+                    offsetHeading = drive.getRawExternalHeading();
+
+                break;
+
+            case FtcGamePad.GAMEPAD_RBUMPER:
+                if(isPressed)
+                    isSlowModeActive = !isSlowModeActive;
+
+                break;
+
+        }
+
+    }
+
+    private void OnOperatorGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
+
+        if(shouldUseMasterController) // Forward Controls to Driver
+            this.OnDriverGamePadChange(gamepad, button, isPressed);
+
+    }
+
     private void handleDrive() {
+
         double y = Range.clip(Math.pow(-gamepad1.left_stick_y, 3), -1.0, 1.0);
         double xt = (Math.pow(gamepad1.right_trigger, 3) - Math.pow(gamepad1.left_trigger, 3)) * (shouldUseMasterController ? 0 : 1);
         double x = Range.clip(Math.pow(gamepad1.left_stick_x, 3) + xt, -1.0, 1.0) * 1.1;
@@ -99,30 +129,11 @@ public class Teleop extends LinearOpMode {
 
     }
 
-    private void OnDriverGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
+    private void triggerPixelClampedRumble() {
 
-        switch (button) {
-
-            case FtcGamePad.GAMEPAD_BACK:
-                if(isPressed)
-                    offsetHeading = drive.getRawExternalHeading();
-
-                break;
-
-            case FtcGamePad.GAMEPAD_RBUMPER:
-                if(isPressed)
-                    isSlowModeActive = !isSlowModeActive;
-
-                break;
-
-        }
+        this.gamepad1.rumbleBlips(2);
+        this.gamepad2.rumbleBlips(2);
 
     }
 
-    private void OnOperatorGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
-
-        if(shouldUseMasterController) // Forward Controls to Driver
-            this.OnDriverGamePadChange(gamepad, button, isPressed);
-
-    }
 }
