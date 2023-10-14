@@ -27,7 +27,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package com.bravenatorsrobotics;
+package com.bravenatorsrobotics.concept;
 
 import android.graphics.Color;
 

@@ -5,4 +5,6 @@ public class HardwareMapIdentities {
     public static final String SERVO_CLAMP = "clamp";
     public static final String POUCH_SENSOR = "pouchSensor";
 
+    public static final String LIFT = "lift";
+
 }

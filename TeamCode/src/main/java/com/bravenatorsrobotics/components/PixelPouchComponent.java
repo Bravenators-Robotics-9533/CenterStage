@@ -35,7 +35,7 @@ public class PixelPouchComponent {
 
     }
 
-    public void initialize() {
+    public void initializeServo() {
 
         this.clampServo.setPosition(CLAMP_OPEN_POSITION);
 

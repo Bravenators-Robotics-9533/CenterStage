@@ -1,8 +1,8 @@
 package com.bravenatorsrobotics;
 
 import com.bravenatorsrobotics.components.IntakeComponent;
+import com.bravenatorsrobotics.components.LiftComponent;
 import com.bravenatorsrobotics.components.PixelPouchComponent;
-import com.bravenatorsrobotics.eventSystem.Callback;
 import com.bravenatorsrobotics.gamepad.FtcGamePad;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -24,6 +24,7 @@ public class Teleop extends LinearOpMode {
 
     private IntakeComponent intakeComponent;
     private PixelPouchComponent pixelPouchComponent;
+    private LiftComponent liftComponent;
 
     private boolean isSlowModeActive = false;
     private boolean shouldUseMasterController = false;
@@ -42,8 +43,9 @@ public class Teleop extends LinearOpMode {
 
         this.pixelPouchComponent = new PixelPouchComponent(super.hardwareMap);
         this.pixelPouchComponent.addOnClampCallback(this::triggerPixelClampedRumble);
-        this.pixelPouchComponent.initialize();
+        this.pixelPouchComponent.initializeServo();
 
+        this.liftComponent = new LiftComponent(super.hardwareMap);
     }
 
     @Override
@@ -114,6 +116,7 @@ public class Teleop extends LinearOpMode {
                 }
 
                 break;
+
         }
 
         if(shouldStopIntake && !intakeComponent.isRunning()) {
