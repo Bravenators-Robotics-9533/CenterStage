@@ -7,6 +7,7 @@ import com.bravenatorsrobotics.gamepad.FtcGamePad;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
 
 import roadrunner.drive.MecanumDrive;
@@ -62,7 +63,11 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            telemetry.addData("Pixel Pouch Status", pixelPouchComponent.getPixelPouchStatus());
+            telemetry.update();
+
             this.handleDrive();
+            this.handleLift();
 
             this.pixelPouchComponent.update();
 
@@ -117,9 +122,22 @@ public class Teleop extends LinearOpMode {
 
                 break;
 
+            case FtcGamePad.GAMEPAD_B:
+                if(isPressed) {
+                    pixelPouchComponent.togglePouchPosition();
+                }
+
+                break;
+
+            case FtcGamePad.GAMEPAD_X:
+                if(isPressed)
+                    pixelPouchComponent.requestRelease();
+
+                break;
+
         }
 
-        if(shouldStopIntake && !intakeComponent.isRunning()) {
+        if(shouldStopIntake && intakeComponent.isRunning()) {
             this.intakeComponent.stopIntakeMotor();
         }
 
@@ -158,6 +176,15 @@ public class Teleop extends LinearOpMode {
         }
 
         drive.setMotorPowers(frontLeftPower, backLeftPower, backRightPower, frontRightPower);
+
+    }
+
+    private void handleLift() {
+
+        Gamepad gamepad = shouldUseMasterController ? gamepad1 : gamepad2;
+
+        double manualLiftPower = Range.clip(Math.pow(gamepad.right_trigger - gamepad.left_trigger, 3), -1.0, 1.0);
+        liftComponent.moveByPower(manualLiftPower);
 
     }
 

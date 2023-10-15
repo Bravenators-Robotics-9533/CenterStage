@@ -36,6 +36,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 @TeleOp(name="Concept Lift Component", group="Concept")
 public class ConceptLiftComponent extends LinearOpMode {
 
+    private static final double LIFT_POWER = 1.0;
+
     private LiftComponent liftComponent;
 
     @Override
@@ -51,9 +53,9 @@ public class ConceptLiftComponent extends LinearOpMode {
         while(opModeIsActive()) {
 
             if(gamepad1.a) {
-                liftComponent.moveByPower(0.25);
+                liftComponent.moveByPower(LIFT_POWER);
             } else if(gamepad1.y) {
-                liftComponent.moveByPower(-0.25);
+                liftComponent.moveByPower(-LIFT_POWER);
             } else {
                 liftComponent.moveByPower(0);
             }

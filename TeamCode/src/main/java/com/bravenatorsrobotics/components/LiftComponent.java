@@ -18,6 +18,7 @@ public class LiftComponent {
     public LiftComponent(HardwareMap hardwareMap) {
 
         liftMotor = hardwareMap.get(DcMotorEx.class, HardwareMapIdentities.LIFT);
+        liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 

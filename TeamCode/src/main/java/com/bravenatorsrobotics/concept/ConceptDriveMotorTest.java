@@ -29,63 +29,53 @@
 
 package com.bravenatorsrobotics.concept;
 
-import android.graphics.Color;
-
-import com.qualcomm.hardware.rev.RevColorSensorV3;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.bravenatorsrobotics.components.LiftComponent;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
-import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+@TeleOp(name="Concept Drive Motor Test", group="Concept")
+public class ConceptDriveMotorTest extends LinearOpMode {
 
+    private void sleep(int ms) {
 
-/*
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When a selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
- */
+        boolean shouldContinue = true;
+        ElapsedTime timer = new ElapsedTime();
 
-@Autonomous(name="Concept: Auto Intake Servo Clamp", group="Concept")
-public class ConceptAutoIntakeServoClamp extends LinearOpMode {
+        while(opModeIsActive() && shouldContinue) {
+            if(timer.milliseconds() >= ms)
+                shouldContinue = false;
+        }
 
-    private RevColorSensorV3 colorSensorV3;
-
-    private static boolean isOpen = true;
+    }
 
     @Override
     public void runOpMode() {
 
-        this.colorSensorV3  = hardwareMap.get(RevColorSensorV3.class, "pouchSensor");
+        DcMotorEx fl = hardwareMap.get(DcMotorEx.class, "fl");
+        DcMotorEx fr = hardwareMap.get(DcMotorEx.class, "fr");
+        DcMotorEx bl = hardwareMap.get(DcMotorEx.class, "bl");
+        DcMotorEx br = hardwareMap.get(DcMotorEx.class, "br");
 
         telemetry.addData("Status", "Initialized");
+        telemetry.update();
 
-        // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
-        // run until the end of the match (driver presses STOP)
+        fl.setPower(1);
+        sleep(1000);
+        fl.setPower(0);
+        fr.setPower(1);
+        sleep(1000);
+        fr.setPower(0);
+        bl.setPower(1);
+        sleep(1000);
+        bl.setPower(0);
+        br.setPower(1);
+        sleep(1000);
+        br.setPower(0);
 
-
-        while (opModeIsActive()) {
-
-            double distance = colorSensorV3.getDistance(DistanceUnit.MM);
-
-
-            telemetry.addData("Distance", distance);
-            telemetry.update();
-
-        }
     }
+
 }
