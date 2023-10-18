@@ -15,7 +15,7 @@ import roadrunner.drive.MecanumDrive;
 @TeleOp(name="Teleop", group="Competition")
 public class Teleop extends LinearOpMode {
 
-    private static final double MAX_ROBOT_SPEED = 0.75;
+    private static final double MAX_ROBOT_SPEED = 1.0;
     private static final double SLOW_MODE_SPEED = 0.2;
 
     private FtcGamePad driverGamePad;
@@ -172,6 +172,13 @@ public class Teleop extends LinearOpMode {
             frontRightPower = Range.clip(frontRightPower, -SLOW_MODE_SPEED, SLOW_MODE_SPEED);
             backLeftPower   = Range.clip(backLeftPower, -SLOW_MODE_SPEED, SLOW_MODE_SPEED);
             backRightPower  = Range.clip(backRightPower, -SLOW_MODE_SPEED, SLOW_MODE_SPEED);
+
+        } else {
+
+            frontLeftPower  = Range.clip(frontLeftPower, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+            frontRightPower = Range.clip(frontRightPower, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+            backLeftPower   = Range.clip(backLeftPower, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
+            backRightPower  = Range.clip(backRightPower, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
 
         }
 
