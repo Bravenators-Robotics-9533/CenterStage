@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class LiftComponent {
 
+    public static final double LIFT_SPEED = 1.0;
+
     public static final int LIFT_POSITION_INTAKE = 0;
     public static final int LIFT_POSITION_ARM_SAFE = 100;
 
@@ -37,5 +39,9 @@ public class LiftComponent {
         liftMotor.setPower(power);
 
     }
+
+    public int getCurrentPosition() { return this.liftMotor.getCurrentPosition(); }
+
+    public boolean isBusy() { return this.liftMotor.isBusy(); }
 
 }

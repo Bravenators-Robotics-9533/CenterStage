@@ -12,11 +12,11 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class PixelPouchComponent {
 
-    private static final double CLAMP_OPEN_POSITION = 1.0;
-    private static final double CLAMP_CLOSE_POSITION = 0.75;
+    public static final double CLAMP_OPEN_POSITION = 1.0;
+    public static final double CLAMP_CLOSE_POSITION = 0.75;
 
-    private static final double POUCH_INTAKE_POSITION = 0;
-    private static final double POUCH_RELEASE_POSITION = 0.5;
+    public static final double POUCH_INTAKE_POSITION = 0;
+    public static final double POUCH_RELEASE_POSITION = 0.5;
 
     private static final double POUCH_SENSOR_DISTANCE = 22.0;
 
@@ -106,6 +106,12 @@ public class PixelPouchComponent {
             pouchServo.setPosition(POUCH_RELEASE_POSITION);
 
     }
+
+    public void setPouchPosition(double position) {
+        pouchServo.setPosition(position);
+    }
+
+    public double getPouchPosition() { return this.pouchServo.getPosition(); }
 
     public void requestRelease() {
         pixelPouchStatus = PixelPouchStatus.OPEN_REQUESTED;
