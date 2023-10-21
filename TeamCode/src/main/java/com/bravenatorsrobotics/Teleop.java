@@ -3,12 +3,18 @@ package com.bravenatorsrobotics;
 import com.bravenatorsrobotics.components.IntakeComponent;
 import com.bravenatorsrobotics.components.LiftComponent;
 import com.bravenatorsrobotics.components.PixelPouchComponent;
+import com.bravenatorsrobotics.components.SwingArmComponent;
 import com.bravenatorsrobotics.gamepad.FtcGamePad;
+import com.bravenatorsrobotics.multiComponentSystem.LiftMultiComponentSystem;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+import javax.lang.model.element.TypeElement;
 
 import roadrunner.drive.MecanumDrive;
 
@@ -26,6 +32,9 @@ public class Teleop extends LinearOpMode {
     private IntakeComponent intakeComponent;
     private PixelPouchComponent pixelPouchComponent;
     private LiftComponent liftComponent;
+    private SwingArmComponent swingArmComponent;
+
+    private LiftMultiComponentSystem liftMultiComponentSystem;
 
     private boolean isSlowModeActive = false;
     private boolean shouldUseMasterController = false;
@@ -47,6 +56,9 @@ public class Teleop extends LinearOpMode {
         this.pixelPouchComponent.initializeServo();
 
         this.liftComponent = new LiftComponent(super.hardwareMap);
+        this.swingArmComponent = new SwingArmComponent(super.hardwareMap);
+
+        this.liftMultiComponentSystem = new LiftMultiComponentSystem(this.liftComponent, this.swingArmComponent, this.pixelPouchComponent);
     }
 
     @Override
@@ -66,10 +78,16 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("Pixel Pouch Status", pixelPouchComponent.getPixelPouchStatus());
             telemetry.update();
 
+            telemetry.addData("Lift Position", liftComponent.getCurrentPosition());
+
             this.handleDrive();
             this.handleLift();
 
             this.pixelPouchComponent.update();
+            this.swingArmComponent.update();
+
+            this.liftMultiComponentSystem.update();
+            this.liftMultiComponentSystem.telemetry(telemetry);
 
             driverGamePad.update();
             operatorGamePad.update();
@@ -124,7 +142,7 @@ public class Teleop extends LinearOpMode {
 
             case FtcGamePad.GAMEPAD_B:
                 if(isPressed) {
-                    pixelPouchComponent.togglePouchPosition();
+//                    pixelPouchComponent.togglePouchPosition();
                 }
 
                 break;
@@ -134,6 +152,24 @@ public class Teleop extends LinearOpMode {
                     pixelPouchComponent.requestRelease();
 
                 break;
+
+            case FtcGamePad.GAMEPAD_DPAD_LEFT:
+                if(isPressed) {
+                    liftComponent.goToEncoderPosition(LiftComponent.LIFT_POSITION_ARM_SAFE, LiftComponent.LIFT_SPEED);
+                }
+
+                break;
+
+            case FtcGamePad.GAMEPAD_DPAD_UP:
+                if(isPressed) {
+                    liftMultiComponentSystem.goToScoringPosition();
+                }
+
+                break;
+
+            case FtcGamePad.GAMEPAD_DPAD_DOWN:
+                if(isPressed)
+                    liftComponent.goToEncoderPosition(0, LiftComponent.LIFT_SPEED);
 
         }
 
@@ -190,8 +226,8 @@ public class Teleop extends LinearOpMode {
 
         Gamepad gamepad = shouldUseMasterController ? gamepad1 : gamepad2;
 
-        double manualLiftPower = Range.clip(Math.pow(gamepad.right_trigger - gamepad.left_trigger, 3), -1.0, 1.0);
-        liftComponent.moveByPower(manualLiftPower);
+//        double manualLiftPower = Range.clip(Math.pow(gamepad.right_trigger - gamepad.left_trigger, 3), -1.0, 1.0);
+//        liftComponent.moveByPower(manualLiftPower);
 
     }
 

@@ -7,10 +7,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class LiftComponent {
 
+    private static final double MAX_MOTOR_VELOCITY = 2800;
+
     public static final double LIFT_SPEED = 1.0;
 
     public static final int LIFT_POSITION_INTAKE = 0;
-    public static final int LIFT_POSITION_ARM_SAFE = 100;
+    public static final int LIFT_POSITION_ARM_SAFE = 720;
 
     public static final int LIFT_POSITION_STAGE_LOWER_RELEASE = 200;
     public static final int LIFT_POSITION_STAGE_UPPER_RELEASE = 300;
@@ -20,6 +22,10 @@ public class LiftComponent {
     public LiftComponent(HardwareMap hardwareMap) {
 
         liftMotor = hardwareMap.get(DcMotorEx.class, HardwareMapIdentities.LIFT);
+
+        liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        liftMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
@@ -36,7 +42,7 @@ public class LiftComponent {
         liftMotor.setTargetPosition(encoderPosition);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-        liftMotor.setPower(power);
+        liftMotor.setVelocity(MAX_MOTOR_VELOCITY * power);
 
     }
 
