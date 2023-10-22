@@ -8,10 +8,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class SwingArmComponent {
 
-    public static final double SWING_ARM_MOTOR_SPEED = 0.25;
+    public static final double SWING_ARM_MOTOR_SPEED = 1.0;
 
     public static final int SWING_ARM_ZERO_POSITION = 0;
-    public static final int SWING_ARM_OUT_POSITION = 144;
+    public static final int SWING_ARM_OUT_POSITION = 750;
+
+    private static final int SWING_ARM_TOLERANCE = 10;
 
     private final DcMotorEx swingArmMotor;
 
@@ -28,7 +30,8 @@ public class SwingArmComponent {
 
         this.swingArmMotor = hardwareMap.get(DcMotorEx.class, HardwareMapIdentities.SWING_ARM);
         this.swingArmMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        this.swingArmMotor.setDirection(DcMotorSimple.Direction.REVERSE);
+        this.swingArmMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        this.swingArmMotor.setTargetPositionTolerance(SWING_ARM_TOLERANCE);
 
         this.swingArmMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.swingArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -57,7 +60,7 @@ public class SwingArmComponent {
 
     }
 
-    private void setPower(double power) {
+    public void setPower(double power) {
         this.swingArmMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         this.swingArmMotor.setPower(power);
     }

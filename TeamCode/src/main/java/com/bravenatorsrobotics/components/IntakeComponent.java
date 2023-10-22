@@ -2,11 +2,12 @@ package com.bravenatorsrobotics.components;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class IntakeComponent {
 
-    private static final double INTAKE_POWER = 0.5;
+    private static final double INTAKE_POWER = 1.0;
 
     private final DcMotorEx intakeMotor;
 
@@ -14,6 +15,8 @@ public class IntakeComponent {
 
         this.intakeMotor = hardwareMap.get(DcMotorEx.class, "intake");
         this.intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        this.intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
 
     }
 

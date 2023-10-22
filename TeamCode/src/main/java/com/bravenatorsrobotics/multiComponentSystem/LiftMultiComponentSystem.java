@@ -58,7 +58,10 @@ public class LiftMultiComponentSystem {
     }
 
     public void goToIntakePosition() {
+
+        this.intakePositionState = IntakePositionState.SWINGING_ARM;
         this.targetPosition = SystemPosition.INTAKE_POSITION;
+
     }
 
     public void update() {
@@ -89,7 +92,7 @@ public class LiftMultiComponentSystem {
         switch (this.scoringPositionState) {
 
             case LIFTING:
-                liftComponent.goToEncoderPosition(LiftComponent.LIFT_POSITION_ARM_SAFE, LiftComponent.LIFT_SPEED);
+                liftComponent.goToEncoderPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE, LiftComponent.LIFT_SPEED);
                 this.scoringPositionState = ScoringPositionState.AWAITING_LIFT;
 
                 this.timeoutTimer.reset();
@@ -132,7 +135,7 @@ public class LiftMultiComponentSystem {
                 break;
 
             case DONE:
-                this.actualPosition = SystemPosition.INTAKE_POSITION;
+                this.actualPosition = SystemPosition.SCORING_POSITION;
                 break;
 
         }
@@ -200,6 +203,9 @@ public class LiftMultiComponentSystem {
     }
 
     public void telemetry(Telemetry telemetry) {
-        telemetry.addData("State", this.scoringPositionState.name());
+        telemetry.addData("Target Position",this.targetPosition.name());
+        telemetry.addData("Actual Position", this.actualPosition.name());
+        telemetry.addData("Scoring State", this.scoringPositionState.name());
+        telemetry.addData("Intake State", this.intakePositionState.name());
     }
 }

@@ -169,7 +169,9 @@ public class Teleop extends LinearOpMode {
 
             case FtcGamePad.GAMEPAD_DPAD_DOWN:
                 if(isPressed)
-                    liftComponent.goToEncoderPosition(0, LiftComponent.LIFT_SPEED);
+                    liftMultiComponentSystem.goToIntakePosition();
+
+                break;
 
         }
 
@@ -226,7 +228,8 @@ public class Teleop extends LinearOpMode {
 
         Gamepad gamepad = shouldUseMasterController ? gamepad1 : gamepad2;
 
-//        double manualLiftPower = Range.clip(Math.pow(gamepad.right_trigger - gamepad.left_trigger, 3), -1.0, 1.0);
+        double manualLiftPower = Range.clip(Math.pow(gamepad.right_trigger - gamepad.left_trigger, 3), -1.0, 1.0);
+//        this.swingArmComponent.setPower(manualLiftPower);
 //        liftComponent.moveByPower(manualLiftPower);
 
     }
