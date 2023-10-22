@@ -48,9 +48,9 @@ import java.util.List;
 public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive {
 
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(5, 0, 0);
 
-    public static double LATERAL_MULTIPLIER = 1;
+    public static double LATERAL_MULTIPLIER = (52.248794 / 44.45) * (53.50407 / 53.75) * (53.2 / 52.87);
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
