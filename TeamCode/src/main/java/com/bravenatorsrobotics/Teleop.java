@@ -4,6 +4,7 @@ import com.bravenatorsrobotics.components.IntakeComponent;
 import com.bravenatorsrobotics.components.LiftComponent;
 import com.bravenatorsrobotics.components.PixelPouchComponent;
 import com.bravenatorsrobotics.components.SwingArmComponent;
+import com.bravenatorsrobotics.config.Config;
 import com.bravenatorsrobotics.gamepad.FtcGamePad;
 import com.bravenatorsrobotics.multiComponentSystem.LiftMultiComponentSystem;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -43,6 +44,9 @@ public class Teleop extends LinearOpMode {
     private double offsetHeading = 0;
 
     private void Initialize() {
+
+        Config config = new Config(this.hardwareMap.appContext);
+        shouldUseMasterController = config.IsSingleControllerOverride();
 
         this.driverGamePad   = new FtcGamePad("Driver", gamepad1, this::OnDriverGamePadChange);
         this.operatorGamePad = new FtcGamePad("Operator", gamepad2, this::OnOperatorGamePadChange);
