@@ -15,7 +15,7 @@ public class LiftComponent {
     public static final int LIFT_POSITION_ARM_SAFE = 720;
 
     public static final int LIFT_POSITION_STAGE_LOWER_RELEASE = 900;
-    public static final int LIFT_POSITION_STAGE_UPPER_RELEASE = 1000;
+    public static final int LIFT_POSITION_STAGE_UPPER_RELEASE = 1075;
 
     private final DcMotorEx liftMotor;
 

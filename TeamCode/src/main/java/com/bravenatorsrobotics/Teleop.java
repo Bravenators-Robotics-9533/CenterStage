@@ -75,11 +75,6 @@ public class Teleop extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            telemetry.addData("Pixel Pouch Status", pixelPouchComponent.getPixelPouchStatus());
-            telemetry.update();
-
-            telemetry.addData("Lift Position", liftComponent.getCurrentPosition());
-
             this.handleDrive();
             this.handleLift();
 
@@ -87,10 +82,16 @@ public class Teleop extends LinearOpMode {
             this.swingArmComponent.update();
 
             this.liftMultiComponentSystem.update();
-            this.liftMultiComponentSystem.telemetry(telemetry);
+//            this.liftMultiComponentSystem.telemetry(telemetry);
 
             driverGamePad.update();
             operatorGamePad.update();
+
+            telemetry.addData("Pixel Pouch Status", pixelPouchComponent.getPixelPouchStatus());
+            telemetry.addData("Lift Position", liftComponent.getCurrentPosition());
+            telemetry.addData("Bot Heading", drive.getRawExternalHeading());
+            telemetry.update();
+
 
         }
     }
@@ -162,7 +163,14 @@ public class Teleop extends LinearOpMode {
 
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if(isPressed) {
-                    liftMultiComponentSystem.goToScoringPosition();
+                    liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE);
+                }
+
+                break;
+
+            case FtcGamePad.GAMEPAD_DPAD_RIGHT:
+                if(isPressed) {
+                    liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_UPPER_RELEASE);
                 }
 
                 break;
@@ -181,12 +189,14 @@ public class Teleop extends LinearOpMode {
 
     }
 
+    private static final int DRIVER_CONTROLLER_EASE_POW = 1;
+
     private void handleDrive() {
 
-        double y = Range.clip(Math.pow(-gamepad1.left_stick_y, 3), -1.0, 1.0);
-        double xt = (Math.pow(gamepad1.right_trigger, 3) - Math.pow(gamepad1.left_trigger, 3)) * (shouldUseMasterController ? 0 : 1);
-        double x = Range.clip(Math.pow(gamepad1.left_stick_x, 3) + xt, -1.0, 1.0) * 1.1;
-        double rx = Range.clip(Math.pow(gamepad1.right_stick_x, 3), -1.0, 1.0);
+        double y = Range.clip(Math.pow(-gamepad1.left_stick_y, DRIVER_CONTROLLER_EASE_POW), -1.0, 1.0);
+        double xt = (Math.pow(gamepad1.right_trigger, DRIVER_CONTROLLER_EASE_POW) - Math.pow(gamepad1.left_trigger, DRIVER_CONTROLLER_EASE_POW)) * (shouldUseMasterController ? 0 : 1);
+        double x = Range.clip(Math.pow(gamepad1.left_stick_x, DRIVER_CONTROLLER_EASE_POW) + xt, -1.0, 1.0);
+        double rx = Range.clip(Math.pow(gamepad1.right_stick_x, DRIVER_CONTROLLER_EASE_POW), -1.0, 1.0);
 
         // Read inverse IMU heading, as the UMG heading is CW positive
         double botHeading = -drive.getRawExternalHeading() + offsetHeading;

@@ -13,6 +13,8 @@ public class LiftMultiComponentSystem {
     private final SwingArmComponent swingArmComponent;
     private final PixelPouchComponent pixelPouchComponent;
 
+    private int targetLiftPosition;
+
     private enum SystemPosition {
         SCORING_POSITION,
         INTAKE_POSITION
@@ -50,10 +52,11 @@ public class LiftMultiComponentSystem {
         this.pixelPouchComponent = pixelPouchComponent;
     }
 
-    public void goToScoringPosition() {
+    public void goToScoringPosition(int liftPosition) {
 
         this.scoringPositionState = ScoringPositionState.LIFTING;
         this.targetPosition = SystemPosition.SCORING_POSITION;
+        this.targetLiftPosition = liftPosition;
 
     }
 
@@ -92,7 +95,7 @@ public class LiftMultiComponentSystem {
         switch (this.scoringPositionState) {
 
             case LIFTING:
-                liftComponent.goToEncoderPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE, LiftComponent.LIFT_SPEED);
+                liftComponent.goToEncoderPosition(targetLiftPosition, LiftComponent.LIFT_SPEED);
                 this.scoringPositionState = ScoringPositionState.AWAITING_LIFT;
 
                 this.timeoutTimer.reset();
