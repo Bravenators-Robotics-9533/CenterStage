@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -52,7 +53,7 @@ public class Teleop extends LinearOpMode {
         this.intakeComponent = new IntakeComponent(super.hardwareMap);
 
         this.pixelPouchComponent = new PixelPouchComponent(super.hardwareMap);
-        this.pixelPouchComponent.addOnClampCallback(this::triggerPixelClampedRumble);
+        this.pixelPouchComponent.addOnClampCallback(this::onClampCallback);
         this.pixelPouchComponent.initializeServo();
 
         this.liftComponent = new LiftComponent(super.hardwareMap);
@@ -68,7 +69,7 @@ public class Teleop extends LinearOpMode {
 
         Initialize();
 
-        telemetry.addData("Status", "Initialized!");
+        telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         waitForStart();
@@ -244,10 +245,28 @@ public class Teleop extends LinearOpMode {
 
     }
 
+    private void onClampCallback() {
+
+        this.triggerPixelClampedRumble();
+
+        // Get Color of Pixel
+        NormalizedRGBA rgba = this.pixelPouchComponent.getPouchSensorActiveColor();
+        setGamepadStatusColor(rgba.red * 255, rgba.green * 255, rgba.blue * 255);
+    }
+
     private void triggerPixelClampedRumble() {
 
         this.gamepad1.rumbleBlips(2);
         this.gamepad2.rumbleBlips(2);
+
+    }
+
+    private static final int COLOR_STATUS_DURATION = 2000;
+
+    private void setGamepadStatusColor(double r, double g, double b) {
+
+        this.gamepad1.setLedColor(r, g, b, COLOR_STATUS_DURATION);
+        this.gamepad2.setLedColor(r, g, b, COLOR_STATUS_DURATION);
 
     }
 

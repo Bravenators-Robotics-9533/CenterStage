@@ -5,6 +5,7 @@ import com.bravenatorsrobotics.eventSystem.Callback;
 import com.bravenatorsrobotics.eventSystem.CallbackSystem;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -127,5 +128,7 @@ public class PixelPouchComponent {
     public void removeOnClampCallback(Callback callback) { this.onClampCallbackSystem.removeCallback(callback); }
 
     public PixelPouchStatus getPixelPouchStatus() { return this.pixelPouchStatus; }
+
+    public NormalizedRGBA getPouchSensorActiveColor() { return this.pouchColorSensor.getNormalizedColors(); }
 
 }
