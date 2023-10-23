@@ -1,5 +1,6 @@
 package com.bravenatorsrobotics.vision;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.bravenatorsrobotics.HardwareMapIdentities;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -23,6 +24,8 @@ public class OpenCVDetection {
         this.camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         this.pipeline = new TeamPropPipeline(telemetry);
 
+        FtcDashboard.getInstance().startCameraStream(this.camera, 30);
+
     }
 
     public void initializeCamera() {
@@ -31,8 +34,9 @@ public class OpenCVDetection {
             public void onOpened() {
 
                 // Start Streaming
-                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+
                 camera.setPipeline(pipeline);
+                camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
 
             }
 
@@ -41,6 +45,10 @@ public class OpenCVDetection {
                 System.err.println("Could not open OpenCVCamera");
             }
         });
+    }
+
+    public void releaseCamera() {
+        this.camera.stopStreaming();
     }
 
 }
