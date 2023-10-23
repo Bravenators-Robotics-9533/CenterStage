@@ -15,14 +15,14 @@ public class OpenCVDetection {
     private final OpenCvCamera camera;
     private final TeamPropPipeline pipeline;
 
-    public OpenCVDetection(Telemetry telemetry, HardwareMap hardwareMap) {
+    public OpenCVDetection(HardwareMap hardwareMap) {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
         WebcamName webcamName = hardwareMap.get(WebcamName.class, HardwareMapIdentities.WEBCAM);
 
         this.camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
-        this.pipeline = new TeamPropPipeline(telemetry);
+        this.pipeline = new TeamPropPipeline();
 
         FtcDashboard.getInstance().startCameraStream(this.camera, 30);
 
@@ -32,8 +32,6 @@ public class OpenCVDetection {
         this.camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-
-                // Start Streaming
 
                 camera.setPipeline(pipeline);
                 camera.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
@@ -50,5 +48,7 @@ public class OpenCVDetection {
     public void releaseCamera() {
         this.camera.stopStreaming();
     }
+
+    public TeamPropPipeline getTeamPropPipeline() { return this.pipeline; }
 
 }
