@@ -23,7 +23,7 @@ public class ConceptTeamPropIdentification extends LinearOpMode {
 
         OpenCVDetection openCVDetection = new OpenCVDetection(hardwareMap);
         openCVDetection.getTeamPropPipeline().setDetectionColorPipeline(colorPipeline);
-        openCVDetection.initializeCamera();
+        openCVDetection.startStreaming();
 
         waitForStart();
 

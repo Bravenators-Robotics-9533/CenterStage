@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.bravenatorsrobotics.HardwareMapIdentities;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
@@ -28,7 +27,7 @@ public class OpenCVDetection {
 
     }
 
-    public void initializeCamera() {
+    public void startStreaming() {
         this.camera.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -45,7 +44,7 @@ public class OpenCVDetection {
         });
     }
 
-    public void releaseCamera() {
+    public void stopStreaming() {
         this.camera.stopStreaming();
     }
 
