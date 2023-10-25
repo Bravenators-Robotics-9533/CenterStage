@@ -1,6 +1,7 @@
 package com.bravenatorsrobotics.autonomous;
 
 import com.bravenatorsrobotics.autonomous.routes.RedScoringAutonomousRoute;
+import com.bravenatorsrobotics.components.PixelFunnelComponent;
 import com.bravenatorsrobotics.vision.OpenCVDetection;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,6 +10,8 @@ import roadrunner.drive.MecanumDrive;
 
 @Autonomous(name="Autonomous", group="Competition")
 public class Auto extends LinearOpMode {
+
+    public PixelFunnelComponent pixelFunnelComponent;
 
     private TeamPropLocation teamPropLocation = TeamPropLocation.LEFT;
 
@@ -28,6 +31,9 @@ public class Auto extends LinearOpMode {
         // Setup OpenCV Team Prop Identification
         OpenCVDetection openCVDetection = new OpenCVDetection(this.hardwareMap);
         openCVDetection.startStreaming();
+
+        this.pixelFunnelComponent = new PixelFunnelComponent(this.hardwareMap);
+        this.pixelFunnelComponent.capturePixel();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
