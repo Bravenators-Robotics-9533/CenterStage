@@ -17,7 +17,7 @@ import roadrunner.drive.MecanumDrive;
  */
 @Config
 @Autonomous(group = "drive")
-@Disabled
+
 public class StrafeTest extends LinearOpMode {
     public static double DISTANCE = 60; // in
 
