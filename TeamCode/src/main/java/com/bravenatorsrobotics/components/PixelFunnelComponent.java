@@ -9,7 +9,7 @@ public class PixelFunnelComponent {
     private final Servo pixelFunnelServo;
 
     private static final double CAPTURE_SERVO_POSITION = 0.0;
-    private static final double RELEASE_SERVO_POSITION = 0.45;
+    private static final double RELEASE_SERVO_POSITION = 0.35;
 
     public PixelFunnelComponent(HardwareMap hardwareMap) {
 

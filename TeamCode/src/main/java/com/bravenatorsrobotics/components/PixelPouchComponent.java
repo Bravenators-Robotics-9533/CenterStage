@@ -108,6 +108,8 @@ public class PixelPouchComponent {
 
     }
 
+    public void setClampPosition(double position) { this.clampServo.setPosition(position); }
+
     public void setPouchPosition(double position) {
         pouchServo.setPosition(position);
     }
@@ -117,6 +119,8 @@ public class PixelPouchComponent {
     public void requestRelease() {
         pixelPouchStatus = PixelPouchStatus.OPEN_REQUESTED;
     }
+
+    public void requestClose() { this.pixelPouchStatus = PixelPouchStatus.CLOSE_REQUESTED; }
 
     public boolean isPixelDetected() {
         return this.pouchColorSensor.getDistance(DistanceUnit.MM) <= POUCH_SENSOR_DISTANCE;

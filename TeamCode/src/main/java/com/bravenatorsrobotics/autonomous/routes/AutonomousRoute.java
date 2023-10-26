@@ -1,5 +1,6 @@
 package com.bravenatorsrobotics.autonomous.routes;
 
+import com.bravenatorsrobotics.autonomous.Auto;
 import com.bravenatorsrobotics.autonomous.TeamPropLocation;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -10,11 +11,11 @@ public abstract class AutonomousRoute {
 
     protected final MecanumDrive drive;
 
-    private final LinearOpMode opMode;
+    protected final Auto auto;
     private final ElapsedTime timer = new ElapsedTime();
 
-    public AutonomousRoute(LinearOpMode opMode, MecanumDrive drive) {
-        this.opMode = opMode;
+    public AutonomousRoute(Auto auto, MecanumDrive drive) {
+        this.auto = auto;
         this.drive = drive;
     }
 
@@ -26,7 +27,6 @@ public abstract class AutonomousRoute {
         while(opModeIsActive() && timer.milliseconds() <= millis);
     }
 
-    protected LinearOpMode getOpMode() { return this.opMode; }
-    protected boolean opModeIsActive() { return this.opMode.opModeIsActive(); }
+    protected boolean opModeIsActive() { return this.auto.opModeIsActive(); }
 
 }
