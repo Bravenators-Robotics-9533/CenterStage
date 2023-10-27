@@ -1,10 +1,13 @@
 package com.bravenatorsrobotics.autonomous;
 
+import com.bravenatorsrobotics.autonomous.routes.AutonomousRoute;
+import com.bravenatorsrobotics.autonomous.routes.BlueScoringAutonomousRoute;
 import com.bravenatorsrobotics.autonomous.routes.RedScoringAutonomousRoute;
 import com.bravenatorsrobotics.components.LiftComponent;
 import com.bravenatorsrobotics.components.PixelFunnelComponent;
 import com.bravenatorsrobotics.components.PixelPouchComponent;
 import com.bravenatorsrobotics.components.SwingArmComponent;
+import com.bravenatorsrobotics.config.Config;
 import com.bravenatorsrobotics.multiComponentSystem.LiftMultiComponentSystem;
 import com.bravenatorsrobotics.vision.OpenCVDetection;
 import com.bravenatorsrobotics.vision.TeamPropPipeline;
@@ -32,11 +35,16 @@ public class Auto extends LinearOpMode {
         telemetry.addData("Status", "Initialing...");
         telemetry.update();
 
+        // Config
+        Config config = new Config(hardwareMap.appContext);
+
         // Setup Drive System
         MecanumDrive drive = new MecanumDrive(this.hardwareMap);
 
-        // Setup Autonomous Route
-        RedScoringAutonomousRoute route = new RedScoringAutonomousRoute(this, drive);
+        // Setup Route
+        AutonomousRoute route = config.GetStartingPosition() == Config.StartingPosition.RED ?
+                new RedScoringAutonomousRoute(this, drive) :
+                new BlueScoringAutonomousRoute(this, drive);
         route.initialize();
 
         // Setup OpenCV Team Prop Identification
@@ -44,31 +52,35 @@ public class Auto extends LinearOpMode {
         openCVDetection.getTeamPropPipeline().setDetectionColorPipeline(TeamPropPipeline.DetectionColorPipeline.PIPELINE_RED);
         openCVDetection.startStreaming();
 
+        // Pixel Funnel
         this.pixelFunnelComponent = new PixelFunnelComponent(this.hardwareMap);
         this.pixelFunnelComponent.capturePixel();
 
+        // Lift
         this.liftComponent = new LiftComponent(this.hardwareMap);
 
+        // Swing Arm
         this.swingArmComponent = new SwingArmComponent(this.hardwareMap);
 
+        // Pixel Pouch
         this.pixelPouchComponent = new PixelPouchComponent(this.hardwareMap);
         this.pixelPouchComponent.initializeServo();
-
         this.pixelPouchComponent.requestClose();
         this.pixelPouchComponent.setClampPosition(PixelPouchComponent.CLAMP_CLOSE_POSITION);
 
+        // Lift Multi Component System
         this.liftMultiComponentSystem = new LiftMultiComponentSystem(this.liftComponent, this.swingArmComponent, this.pixelPouchComponent);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
         // Detect Team Prop
-        syncDetectTeamProp(openCVDetection);
+        syncDetectTeamProp(openCVDetection); // LOCKS THREAD!!!
 
         // Stop Streaming
         openCVDetection.stopStreaming();
 
-        waitForStart(); // For Safety wait again for start
+        waitForStart(); // For Safety wait again for start // LOCKS THREAD!!!
 
         // Set to intake position
         this.swingArmComponent.goToIntakePosition();
