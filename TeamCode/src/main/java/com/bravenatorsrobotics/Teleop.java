@@ -87,7 +87,6 @@ public class Teleop extends LinearOpMode {
             this.swingArmComponent.update();
 
             this.liftMultiComponentSystem.update();
-//            this.liftMultiComponentSystem.telemetry(telemetry);
 
             driverGamePad.update();
             operatorGamePad.update();
