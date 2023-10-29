@@ -20,31 +20,20 @@ public class LiftMultiComponentSystem {
         INTAKE_POSITION
     }
 
-    private enum ScoringPositionState {
+    private enum State {
 
+        AT_BOTTOM,
         LIFTING,
         AWAITING_LIFT,
         SWINGING_ARM,
         AWAITING_ARM_SWING,
-        DONE
+        AT_TOP
 
     }
 
-    private enum IntakePositionState {
+    private State state = State.AT_BOTTOM;
 
-        SWINGING_ARM,
-        AWAITING_ARM_SWING,
-        LIFTING,
-        AWAITING_LIFT,
-        DONE
-
-    }
-
-    private SystemPosition actualPosition = SystemPosition.INTAKE_POSITION;
     private SystemPosition targetPosition = SystemPosition.INTAKE_POSITION;
-
-    private ScoringPositionState scoringPositionState = ScoringPositionState.LIFTING;
-    private IntakePositionState intakePositionState = IntakePositionState.SWINGING_ARM;
 
     public LiftMultiComponentSystem(LiftComponent liftComponent, SwingArmComponent swingArmComponent, PixelPouchComponent pixelPouchComponent) {
         this.liftComponent = liftComponent;
@@ -54,7 +43,6 @@ public class LiftMultiComponentSystem {
 
     public void goToScoringPosition(int liftPosition) {
 
-        this.scoringPositionState = ScoringPositionState.LIFTING;
         this.targetPosition = SystemPosition.SCORING_POSITION;
         this.targetLiftPosition = liftPosition;
 
@@ -62,14 +50,11 @@ public class LiftMultiComponentSystem {
 
     public void goToIntakePosition() {
 
-        this.intakePositionState = IntakePositionState.SWINGING_ARM;
         this.targetPosition = SystemPosition.INTAKE_POSITION;
 
     }
 
     public void update() {
-
-        if (this.actualPosition != this.targetPosition) {
 
             switch (this.targetPosition) {
 
@@ -82,8 +67,6 @@ public class LiftMultiComponentSystem {
 
             }
 
-        }
-
     }
 
     private final ElapsedTime timeoutTimer = new ElapsedTime();
@@ -92,23 +75,28 @@ public class LiftMultiComponentSystem {
 
     private void updateScoringStateMachine() {
 
-        switch (this.scoringPositionState) {
+        switch (this.state) {
+
+            case AT_BOTTOM:
+                this.state = State.LIFTING;
+
+                break;
 
             case LIFTING:
                 liftComponent.goToEncoderPosition(targetLiftPosition, LiftComponent.LIFT_SPEED);
-                this.scoringPositionState = ScoringPositionState.AWAITING_LIFT;
+                this.state = State.AWAITING_LIFT;
 
                 this.timeoutTimer.reset();
 
                 break;
 
             case AWAITING_LIFT:
-                if (this.liftComponent.getCurrentPosition() >= LiftComponent.LIFT_POSITION_ARM_SAFE - SAFE_TARGET_TOLERANCE || this.timeoutTimer.seconds() > 2) {
+                if(this.liftComponent.getCurrentPosition() >= LiftComponent.LIFT_POSITION_ARM_SAFE - SAFE_TARGET_TOLERANCE || this.timeoutTimer.seconds() > 2) {
 
                     if (timeoutTimer.seconds() > 2)
                         System.err.println("TIMEOUT HIT");
 
-                    this.scoringPositionState = ScoringPositionState.SWINGING_ARM;
+                    this.state = State.SWINGING_ARM;
                 }
 
                 break;
@@ -119,7 +107,7 @@ public class LiftMultiComponentSystem {
 
                 this.timeoutTimer.reset();
 
-                this.scoringPositionState = ScoringPositionState.AWAITING_ARM_SWING;
+                this.state = State.AWAITING_ARM_SWING;
 
                 break;
 
@@ -131,14 +119,13 @@ public class LiftMultiComponentSystem {
                     if (timeoutTimer.seconds() > 2)
                         System.err.println("TIMEOUT HIT");
 
-                    this.scoringPositionState = ScoringPositionState.DONE;
+                    this.state = State.AT_TOP;
 
                 }
 
                 break;
 
-            case DONE:
-                this.actualPosition = SystemPosition.SCORING_POSITION;
+            case AT_TOP: // Done
                 break;
 
         }
@@ -147,16 +134,20 @@ public class LiftMultiComponentSystem {
 
     private void updateIntakeStateMachine() {
 
-        switch (this.intakePositionState) {
+        switch (this.state) {
+
+            case AT_TOP:
+                this.state = State.SWINGING_ARM;
+
+                break;
 
             case SWINGING_ARM:
-
                 this.swingArmComponent.goToIntakePosition();
                 this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_INTAKE_POSITION);
 
                 this.timeoutTimer.reset();
 
-                this.intakePositionState = IntakePositionState.AWAITING_ARM_SWING;
+                this.state = State.AWAITING_ARM_SWING;
 
                 break;
 
@@ -169,7 +160,7 @@ public class LiftMultiComponentSystem {
                     if (timeoutTimer.seconds() > 2)
                         System.err.println("TIMEOUT HIT");
 
-                    this.intakePositionState = IntakePositionState.LIFTING;
+                    this.state = State.LIFTING;
 
                 }
 
@@ -178,7 +169,7 @@ public class LiftMultiComponentSystem {
             case LIFTING:
 
                 liftComponent.goToEncoderPosition(LiftComponent.LIFT_POSITION_INTAKE, LiftComponent.LIFT_SPEED);
-                this.intakePositionState = IntakePositionState.AWAITING_LIFT;
+                this.state = State.AWAITING_LIFT;
 
                 this.timeoutTimer.reset();
 
@@ -192,23 +183,22 @@ public class LiftMultiComponentSystem {
                         System.err.println("TIMEOUT HIT");
                     }
 
-                    this.intakePositionState = IntakePositionState.DONE;
+                    this.state = State.AT_BOTTOM;
 
                 }
 
                 break;
 
-            case DONE:
-                this.actualPosition = SystemPosition.INTAKE_POSITION;
+            case AT_BOTTOM:
                 break;
+
+
         }
 
     }
 
     public void telemetry(Telemetry telemetry) {
-        telemetry.addData("Target Position",this.targetPosition.name());
-        telemetry.addData("Actual Position", this.actualPosition.name());
-        telemetry.addData("Scoring State", this.scoringPositionState.name());
-        telemetry.addData("Intake State", this.intakePositionState.name());
+        telemetry.addData("Target Position", targetPosition.name());
+        telemetry.addData("State", state.name());
     }
 }

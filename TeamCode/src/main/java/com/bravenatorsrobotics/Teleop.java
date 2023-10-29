@@ -48,6 +48,10 @@ public class Teleop extends LinearOpMode {
         Config config = new Config(this.hardwareMap.appContext);
         shouldUseMasterController = config.IsSingleControllerOverride();
 
+        this.offsetHeading = config.GetStartingPosition() == Config.StartingPosition.RED
+                ? Math.toRadians(-90)
+                : Math.toRadians(90);
+
         this.driverGamePad   = new FtcGamePad("Driver", gamepad1, this::OnDriverGamePadChange);
         this.operatorGamePad = new FtcGamePad("Operator", gamepad2, this::OnOperatorGamePadChange);
 

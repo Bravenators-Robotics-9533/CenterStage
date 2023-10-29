@@ -49,7 +49,10 @@ public class Auto extends LinearOpMode {
 
         // Setup OpenCV Team Prop Identification
         OpenCVDetection openCVDetection = new OpenCVDetection(this.hardwareMap);
-        openCVDetection.getTeamPropPipeline().setDetectionColorPipeline(TeamPropPipeline.DetectionColorPipeline.PIPELINE_RED);
+        openCVDetection.getTeamPropPipeline().setDetectionColorPipeline(
+                config.GetStartingPosition() == Config.StartingPosition.RED ?
+                TeamPropPipeline.DetectionColorPipeline.PIPELINE_RED :
+                TeamPropPipeline.DetectionColorPipeline.PIPELINE_BLUE);
         openCVDetection.startStreaming();
 
         // Pixel Funnel

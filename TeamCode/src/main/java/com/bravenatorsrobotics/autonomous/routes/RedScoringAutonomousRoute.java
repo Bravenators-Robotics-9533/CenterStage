@@ -71,12 +71,11 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             .build();
 
         this.rightFirstSequence = drive.trajectorySequenceBuilder(START_POSITION)
-                .lineTo(new Vector2d(12, -32))
-                .lineToSplineHeading(new Pose2d(15, -26, Math.toRadians(90)))
+                .lineTo(new Vector2d(24, -34))
                 .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
                 .waitSeconds(0.25)
-                .lineToConstantHeading(new Vector2d(12, -26))
-                .lineTo(new Vector2d(12, -36))
+                .lineTo(new Vector2d(24, -40))
+                .splineToConstantHeading(new Vector2d(12, -48), Math.toRadians(180))
             .build();
 
         this.rightLineUpBoard = drive.trajectorySequenceBuilder(this.rightFirstSequence.end())
