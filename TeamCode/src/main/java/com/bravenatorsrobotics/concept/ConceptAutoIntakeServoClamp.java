@@ -59,6 +59,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
  */
 
 @Autonomous(name="Concept: Auto Intake Servo Clamp", group="Concept")
+@Disabled
 public class ConceptAutoIntakeServoClamp extends LinearOpMode {
 
     private RevColorSensorV3 colorSensorV3;

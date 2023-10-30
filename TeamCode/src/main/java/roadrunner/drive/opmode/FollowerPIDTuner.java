@@ -24,7 +24,7 @@ import roadrunner.trajectorysequence.TrajectorySequence;
  */
 @Config
 @Autonomous(group = "drive")
-//@Disabled
+@Disabled
 public class FollowerPIDTuner extends LinearOpMode {
     public static double DISTANCE = 48; // in
 

@@ -31,6 +31,7 @@ package com.bravenatorsrobotics.concept;
 
 import com.bravenatorsrobotics.components.LiftComponent;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Gamepad;
@@ -39,6 +40,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import java.lang.annotation.ElementType;
 
 @Autonomous(name="Concept Controller Rumble", group="Concept")
+@Disabled
+
 public class ConceptControllerRumble extends LinearOpMode {
 
     private void sleep(int ms) {

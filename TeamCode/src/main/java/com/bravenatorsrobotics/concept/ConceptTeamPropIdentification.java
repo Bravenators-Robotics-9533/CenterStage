@@ -4,10 +4,13 @@ import com.acmerobotics.dashboard.config.Config;
 import com.bravenatorsrobotics.vision.OpenCVDetection;
 import com.bravenatorsrobotics.vision.TeamPropPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(name="Concept Team Prop Identification", group="Concept")
 @Config
+@Disabled
+
 public class ConceptTeamPropIdentification extends LinearOpMode {
 
     private enum Position {

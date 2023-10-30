@@ -30,10 +30,13 @@
 package com.bravenatorsrobotics.concept;
 
 import com.bravenatorsrobotics.components.LiftComponent;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp(name="Concept Lift Component", group="Concept")
+@Disabled
+
 public class ConceptLiftComponent extends LinearOpMode {
 
     private static final double LIFT_POWER = 1.0;

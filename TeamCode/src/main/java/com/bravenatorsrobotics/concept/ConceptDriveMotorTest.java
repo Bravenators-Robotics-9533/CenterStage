@@ -30,12 +30,15 @@
 package com.bravenatorsrobotics.concept;
 
 import com.bravenatorsrobotics.components.LiftComponent;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 @TeleOp(name="Concept Drive Motor Test", group="Concept")
+@Disabled
+
 public class ConceptDriveMotorTest extends LinearOpMode {
 
     private void sleep(int ms) {
