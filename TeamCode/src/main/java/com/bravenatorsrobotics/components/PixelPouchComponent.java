@@ -95,6 +95,12 @@ public class PixelPouchComponent {
 
                 break;
 
+            case CLOSED:
+                if(!isPixelDetected)
+                    this.pixelPouchStatus = PixelPouchStatus.OPEN_REQUESTED;
+
+                break;
+
         }
 
     }

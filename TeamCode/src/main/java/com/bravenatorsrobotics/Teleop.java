@@ -3,6 +3,7 @@ package com.bravenatorsrobotics;
 import com.bravenatorsrobotics.components.IntakeComponent;
 import com.bravenatorsrobotics.components.LiftComponent;
 import com.bravenatorsrobotics.components.PixelPouchComponent;
+import com.bravenatorsrobotics.components.SuspensionLiftComponent;
 import com.bravenatorsrobotics.components.SwingArmComponent;
 import com.bravenatorsrobotics.config.Config;
 import com.bravenatorsrobotics.gamepad.FtcGamePad;
@@ -35,6 +36,7 @@ public class Teleop extends LinearOpMode {
     private PixelPouchComponent pixelPouchComponent;
     private LiftComponent liftComponent;
     private SwingArmComponent swingArmComponent;
+    private SuspensionLiftComponent suspensionLiftComponent;
 
     private LiftMultiComponentSystem liftMultiComponentSystem;
 
@@ -66,6 +68,8 @@ public class Teleop extends LinearOpMode {
 
         this.liftComponent = new LiftComponent(super.hardwareMap);
         this.swingArmComponent = new SwingArmComponent(super.hardwareMap);
+
+        this.suspensionLiftComponent = new SuspensionLiftComponent(super.hardwareMap);
 
         this.liftMultiComponentSystem = new LiftMultiComponentSystem(this.liftComponent, this.swingArmComponent, this.pixelPouchComponent);
     }
@@ -247,6 +251,8 @@ public class Teleop extends LinearOpMode {
         Gamepad gamepad = shouldUseMasterController ? gamepad1 : gamepad2;
 
         double manualLiftPower = Range.clip(Math.pow(gamepad.right_trigger - gamepad.left_trigger, 3), -1.0, 1.0);
+        this.suspensionLiftComponent.setPower(manualLiftPower);
+
 //        this.swingArmComponent.setPower(manualLiftPower);
 //        liftComponent.moveByPower(manualLiftPower);
 
