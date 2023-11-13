@@ -10,6 +10,9 @@ public class HardwareMapIdentities {
     public static final String LIFT = "lift";
     public static final String SWING_ARM = "swingArm";
 
+    public static final String SUSPENSION_LIFT = "suspensionLift";
+    public static final String SUSPENSION_LIFT_GUIDE = "suspensionGuide";
+
     public static final String WEBCAM = "Webcam 1";
 
 }
