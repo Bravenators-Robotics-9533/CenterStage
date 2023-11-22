@@ -10,6 +10,9 @@ import java.net.HttpRetryException;
 
 public class SuspensionLiftComponent {
 
+    private static final double SERVO_VELOCITY = 1.2821; // rev/s.
+    private static final double MOTOR_VELOCITY = (1680 * SERVO_VELOCITY) / 2;
+
     private static final double SUSPENSION_LIFT_POWER = 0.75;
 
     private final DcMotorEx suspensionLift;
@@ -22,12 +25,17 @@ public class SuspensionLiftComponent {
         this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         this.suspensionLiftGuideServo = hardwareMap.get(Servo.class, HardwareMapIdentities.SUSPENSION_LIFT_GUIDE);
+        this.suspensionLiftGuideServo.setDirection(Servo.Direction.REVERSE);
 
     }
 
     public void setPower(double power) {
 
-        this.suspensionLift.setPower(power);
+//        this.suspensionLift.setVelocity(SERVO_VELOCITY);
+        double scaledRange = (power + 1.0) / 2.0;
+
+        this.suspensionLiftGuideServo.setPosition(scaledRange);
+        this.suspensionLift.setVelocity(MOTOR_VELOCITY * power);
 
     }
 
