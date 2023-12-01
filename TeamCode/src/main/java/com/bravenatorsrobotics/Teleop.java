@@ -68,13 +68,12 @@ public class Teleop extends LinearOpMode {
         this.swingArmComponent = new SwingArmComponent(super.hardwareMap);
 
         this.suspensionLiftComponent = new SuspensionLiftComponent(super.hardwareMap);
+        this.suspensionLiftComponent.initializeServos();
 
         this.airplaneLauncher = new AirplaneLauncher(super.hardwareMap);
         this.airplaneLauncher.initializeServo();
 
         this.liftMultiComponentSystem = new LiftMultiComponentSystem(this.liftComponent, this.swingArmComponent, this.pixelPouchComponent);
-
-
     }
 
     @Override
@@ -98,6 +97,8 @@ public class Teleop extends LinearOpMode {
             this.swingArmComponent.update();
 
             this.liftMultiComponentSystem.update();
+            this.suspensionLiftComponent.update();
+            this.suspensionLiftComponent.telemetry(telemetry);
 
             driverGamePad.update();
             operatorGamePad.update();
@@ -106,7 +107,6 @@ public class Teleop extends LinearOpMode {
             telemetry.addData("Lift Position", liftComponent.getCurrentPosition());
             telemetry.addData("Bot Heading", drive.getRawExternalHeading());
             telemetry.update();
-
 
         }
     }
@@ -161,7 +161,7 @@ public class Teleop extends LinearOpMode {
 
             case FtcGamePad.GAMEPAD_B:
                 if(isPressed) {
-//                    pixelPouchComponent.togglePouchPosition();
+                    this.suspensionLiftComponent.runLockSequence();
                 }
 
                 break;
@@ -204,6 +204,12 @@ public class Teleop extends LinearOpMode {
                 break;
             case FtcGamePad.GAMEPAD_LBUMPER:
                 isLeftBumperPressed = isPressed;
+                break;
+
+            case FtcGamePad.GAMEPAD_BACK:
+                if(isPressed)
+                    suspensionLiftComponent.unlockLiftLocks();
+
                 break;
 
         }
@@ -271,7 +277,7 @@ public class Teleop extends LinearOpMode {
 
         double manualLiftPower = Range.clip(Math.pow(gamepad.right_trigger - gamepad.left_trigger, 3), -1.0, 1.0);
 
-        this.suspensionLiftComponent.setPower(manualLiftPower);
+        this.suspensionLiftComponent.setManualPower(manualLiftPower);
 
     }
 

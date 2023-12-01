@@ -13,8 +13,8 @@ public class HardwareMapIdentities {
     public static final String SUSPENSION_LIFT = "suspensionLift";
     public static final String SUSPENSION_LIFT_GUIDE = "suspensionGuide";
 
-    public static final String LEFT_LOCKING_SERVO = "leftLockingServo";
-    public static final String RIGHT_LOCKING_SERVO = "rightLockingServo";
+    public static final String LEFT_LOCKING_SERVO = "leftLock";
+    public static final String RIGHT_LOCKING_SERVO = "rightLock";
 
     public static final String AIRPLANE_LAUNCHER_SERVO = "airplane";
 
