@@ -1,5 +1,6 @@
 package com.bravenatorsrobotics;
 
+import com.bravenatorsrobotics.components.AirplaneLauncher;
 import com.bravenatorsrobotics.components.IntakeComponent;
 import com.bravenatorsrobotics.components.LiftComponent;
 import com.bravenatorsrobotics.components.PixelPouchComponent;
@@ -14,10 +15,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.Range;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
-import javax.lang.model.element.TypeElement;
 
 import roadrunner.drive.MecanumDrive;
 
@@ -37,6 +34,7 @@ public class Teleop extends LinearOpMode {
     private LiftComponent liftComponent;
     private SwingArmComponent swingArmComponent;
     private SuspensionLiftComponent suspensionLiftComponent;
+    private AirplaneLauncher airplaneLauncher;
 
     private LiftMultiComponentSystem liftMultiComponentSystem;
 
@@ -71,7 +69,12 @@ public class Teleop extends LinearOpMode {
 
         this.suspensionLiftComponent = new SuspensionLiftComponent(super.hardwareMap);
 
+        this.airplaneLauncher = new AirplaneLauncher(super.hardwareMap);
+        this.airplaneLauncher.initializeServo();
+
         this.liftMultiComponentSystem = new LiftMultiComponentSystem(this.liftComponent, this.swingArmComponent, this.pixelPouchComponent);
+
+
     }
 
     @Override
@@ -127,6 +130,9 @@ public class Teleop extends LinearOpMode {
         }
 
     }
+
+    private boolean isLeftBumperPressed = false;
+    private boolean isRightBumperPressed = false;
 
     private void OnOperatorGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
 
@@ -193,10 +199,23 @@ public class Teleop extends LinearOpMode {
 
                 break;
 
+            case FtcGamePad.GAMEPAD_RBUMPER:
+                isRightBumperPressed = isPressed;
+                break;
+            case FtcGamePad.GAMEPAD_LBUMPER:
+                isLeftBumperPressed = isPressed;
+                break;
+
         }
 
         if(shouldStopIntake && intakeComponent.isRunning()) {
             this.intakeComponent.stopIntakeMotor();
+        }
+
+        if(isLeftBumperPressed && isRightBumperPressed) {
+
+            this.airplaneLauncher.launch();
+
         }
 
     }
