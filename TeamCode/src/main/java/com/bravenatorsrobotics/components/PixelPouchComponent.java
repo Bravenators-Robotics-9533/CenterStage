@@ -7,8 +7,8 @@ import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class PixelPouchComponent {
@@ -17,7 +17,7 @@ public class PixelPouchComponent {
     public static final double CLAMP_CLOSE_POSITION = 0.75;
 
     public static final double POUCH_INTAKE_POSITION = 0;
-    public static final double POUCH_RELEASE_POSITION = 0.5;
+    public static final double POUCH_SCORING_POSITION = 0.5;
 
     private static final double POUCH_SENSOR_DISTANCE = 22.0;
 
@@ -110,7 +110,7 @@ public class PixelPouchComponent {
         if(pouchServo.getPosition() != POUCH_INTAKE_POSITION)
             pouchServo.setPosition(POUCH_INTAKE_POSITION);
         else
-            pouchServo.setPosition(POUCH_RELEASE_POSITION);
+            pouchServo.setPosition(POUCH_SCORING_POSITION);
 
     }
 
@@ -120,7 +120,10 @@ public class PixelPouchComponent {
         pouchServo.setPosition(position);
     }
 
-    public double getPouchPosition() { return this.pouchServo.getPosition(); }
+    public double getPouchServoPosition() { return this.pouchServo.getPosition(); }
+
+    public boolean servoAtScoringPosition() { return this.pouchServo.getPosition() == POUCH_SCORING_POSITION; }
+    public boolean servoAtIntakePosition() { return this.pouchServo.getPosition() == POUCH_INTAKE_POSITION; }
 
     public void requestRelease() {
         pixelPouchStatus = PixelPouchStatus.OPEN_REQUESTED;
@@ -140,5 +143,11 @@ public class PixelPouchComponent {
     public PixelPouchStatus getPixelPouchStatus() { return this.pixelPouchStatus; }
 
     public NormalizedRGBA getPouchSensorActiveColor() { return this.pouchColorSensor.getNormalizedColors(); }
+
+    public void printTelemetry(Telemetry telemetry) {
+
+        telemetry.addData("Pixel Pouch Servo Position", this.pouchServo.getPosition());
+
+    }
 
 }

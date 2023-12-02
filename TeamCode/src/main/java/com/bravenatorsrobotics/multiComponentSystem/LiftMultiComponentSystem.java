@@ -23,10 +23,12 @@ public class LiftMultiComponentSystem {
     private enum State {
 
         AT_BOTTOM,
-        LIFTING,
-        AWAITING_LIFT,
+        INTERNAL_LIFTING,
+        AWAITING_INTERNAL_LIFT,
         SWINGING_ARM,
         AWAITING_ARM_SWING,
+        EXTERNAL_LIFTING,
+        AWAITING_EXTERNAL_LIFT,
         AT_TOP
 
     }
@@ -71,27 +73,25 @@ public class LiftMultiComponentSystem {
 
     private final ElapsedTime timeoutTimer = new ElapsedTime();
 
-    private static final int SAFE_TARGET_TOLERANCE = 10;
-
     private void updateScoringStateMachine() {
 
         switch (this.state) {
 
             case AT_BOTTOM:
-                this.state = State.LIFTING;
+                this.state = State.INTERNAL_LIFTING;
 
                 break;
 
-            case LIFTING:
-                liftComponent.goToEncoderPosition(targetLiftPosition, LiftComponent.LIFT_SPEED);
-                this.state = State.AWAITING_LIFT;
+            case INTERNAL_LIFTING:
+                liftComponent.goToEncoderPosition(LiftComponent.LIFT_POSITION_ARM_SAFE, LiftComponent.LIFT_SPEED);
+                this.state = State.AWAITING_INTERNAL_LIFT;
 
                 this.timeoutTimer.reset();
 
                 break;
 
-            case AWAITING_LIFT:
-                if(this.liftComponent.getCurrentPosition() >= LiftComponent.LIFT_POSITION_ARM_SAFE - SAFE_TARGET_TOLERANCE || this.timeoutTimer.seconds() > 2) {
+            case AWAITING_INTERNAL_LIFT:
+                if(!this.liftComponent.isBusy() || timeoutTimer.seconds() > 2) {
 
                     if (timeoutTimer.seconds() > 2)
                         System.err.println("TIMEOUT HIT");
@@ -102,8 +102,8 @@ public class LiftMultiComponentSystem {
                 break;
 
             case SWINGING_ARM:
-                this.swingArmComponent.swingOut();
-                this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_RELEASE_POSITION);
+                this.swingArmComponent.goToScoringPosition();
+                this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_SCORING_POSITION);
 
                 this.timeoutTimer.reset();
 
@@ -112,15 +112,32 @@ public class LiftMultiComponentSystem {
                 break;
 
             case AWAITING_ARM_SWING:
-                if ((!this.swingArmComponent.isBusy() &&
-                        this.pixelPouchComponent.getPouchPosition() == PixelPouchComponent.POUCH_RELEASE_POSITION)
-                        || timeoutTimer.seconds() > 2) {
+                if (!this.swingArmComponent.isMotorBusy() && this.pixelPouchComponent.servoAtScoringPosition()) {
 
                     if (timeoutTimer.seconds() > 2)
                         System.err.println("TIMEOUT HIT");
 
-                    this.state = State.AT_TOP;
+                    this.state = State.EXTERNAL_LIFTING;
 
+                }
+
+                break;
+
+            case EXTERNAL_LIFTING:
+                liftComponent.goToEncoderPosition(targetLiftPosition, LiftComponent.LIFT_SPEED);
+                this.state = State.AWAITING_EXTERNAL_LIFT;
+
+                this.timeoutTimer.reset();
+
+                break;
+
+            case AWAITING_EXTERNAL_LIFT:
+                if(!this.liftComponent.isBusy() || this.timeoutTimer.seconds() > 2) {
+                    if(this.timeoutTimer.seconds() > 2) {
+                        System.err.println("TIMEOUT HIT");
+                    }
+
+                    this.state = State.AT_TOP;
                 }
 
                 break;
@@ -137,7 +154,21 @@ public class LiftMultiComponentSystem {
         switch (this.state) {
 
             case AT_TOP:
-                this.state = State.SWINGING_ARM;
+                this.state = State.EXTERNAL_LIFTING;
+
+                break;
+
+            case EXTERNAL_LIFTING:
+                liftComponent.goToEncoderPosition(LiftComponent.LIFT_POSITION_ARM_SAFE, LiftComponent.LIFT_SPEED);
+
+                this.state = State.AWAITING_EXTERNAL_LIFT;
+
+                break;
+
+            case AWAITING_EXTERNAL_LIFT:
+                if(!liftComponent.isBusy()) {
+                    this.state = State.SWINGING_ARM;
+                }
 
                 break;
 
@@ -153,29 +184,29 @@ public class LiftMultiComponentSystem {
 
             case AWAITING_ARM_SWING:
 
-                if ((!this.swingArmComponent.isBusy() &&
-                        this.pixelPouchComponent.getPouchPosition() == PixelPouchComponent.POUCH_RELEASE_POSITION)
+                if ((!this.swingArmComponent.isMotorBusy() &&
+                        this.pixelPouchComponent.getPouchServoPosition() == PixelPouchComponent.POUCH_SCORING_POSITION)
                         || timeoutTimer.seconds() > 2) {
 
                     if (timeoutTimer.seconds() > 2)
                         System.err.println("TIMEOUT HIT");
 
-                    this.state = State.LIFTING;
+                    this.state = State.INTERNAL_LIFTING;
 
                 }
 
                 break;
 
-            case LIFTING:
+            case INTERNAL_LIFTING:
 
                 liftComponent.goToEncoderPosition(LiftComponent.LIFT_POSITION_INTAKE, LiftComponent.LIFT_SPEED);
-                this.state = State.AWAITING_LIFT;
+                this.state = State.AWAITING_INTERNAL_LIFT;
 
                 this.timeoutTimer.reset();
 
                 break;
 
-            case AWAITING_LIFT:
+            case AWAITING_INTERNAL_LIFT:
 
                 if(this.liftComponent.isBusy() || this.timeoutTimer.seconds() > 2) {
 
@@ -198,6 +229,10 @@ public class LiftMultiComponentSystem {
     }
 
     public void telemetry(Telemetry telemetry) {
+        this.swingArmComponent.printTelemetry(telemetry);
+        this.pixelPouchComponent.printTelemetry(telemetry);
+
+        telemetry.addData("Is Swing Arm Motor Busy", swingArmComponent.isMotorBusy());
         telemetry.addData("Target Position", targetPosition.name());
         telemetry.addData("State", state.name());
     }

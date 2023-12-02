@@ -16,6 +16,8 @@ public class SuspensionLiftComponent {
 
     private static final double SUSPENSION_LIFT_POWER = 0.75;
 
+    private static final double SERVO_MOVE_TIME_SECONDS = 2.0;
+
     private final DcMotorEx suspensionLift;
     private final Servo suspensionLiftGuideServo;
 
@@ -24,6 +26,8 @@ public class SuspensionLiftComponent {
 
     private boolean isLockingSequence = false;
     private boolean resetTimeout = false;
+
+    private boolean areServosLocking = false;
 
     public SuspensionLiftComponent(HardwareMap hardwareMap) {
 
@@ -45,7 +49,7 @@ public class SuspensionLiftComponent {
 
     public void initializeServos() {
 
-        unlockLiftLocks();
+//        unlockLiftLocks();
 
     }
 
@@ -62,6 +66,7 @@ public class SuspensionLiftComponent {
     }
 
     private ElapsedTime timer = new ElapsedTime();
+    private ElapsedTime servoTimer = new ElapsedTime();
 
     public void update() {
 
@@ -89,6 +94,14 @@ public class SuspensionLiftComponent {
             }
         }
 
+        if(areServosLocking) {
+            if(servoTimer.seconds() >= SERVO_MOVE_TIME_SECONDS) {
+                this.leftLockingServo.setPosition(0.5);
+                this.rightLockingServo.setPosition(0.5);
+                areServosLocking = false;
+            }
+        }
+
     }
 
     public void runLockSequence() {
@@ -107,12 +120,18 @@ public class SuspensionLiftComponent {
         this.leftLockingServo.setPosition(0);
         this.rightLockingServo.setPosition(0);
 
+        areServosLocking = true;
+        servoTimer.reset();
+
     }
 
     public void lockLiftServos() {
 
         this.leftLockingServo.setPosition(1);
         this.rightLockingServo.setPosition(1);
+
+        areServosLocking = true;
+        servoTimer.reset();
 
     }
 

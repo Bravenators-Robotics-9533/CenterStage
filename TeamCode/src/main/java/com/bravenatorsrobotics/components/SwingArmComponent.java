@@ -1,10 +1,13 @@
 package com.bravenatorsrobotics.components;
 
 import com.bravenatorsrobotics.HardwareMapIdentities;
+import com.bravenatorsrobotics.Teleop;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class SwingArmComponent {
 
@@ -65,7 +68,7 @@ public class SwingArmComponent {
         this.swingArmMotor.setPower(power);
     }
 
-    public void swingOut() {
+    public void goToScoringPosition() {
 
         this.currentState = State.RELEASE;
 
@@ -77,6 +80,12 @@ public class SwingArmComponent {
 
     }
 
-    public boolean isBusy() { return this.swingArmMotor.isBusy(); }
+    public boolean isMotorBusy() { return this.swingArmMotor.isBusy(); }
+
+    public void printTelemetry(Telemetry telemetry) {
+
+        telemetry.addData("Swing Arm Motor Position", this.swingArmMotor.getCurrentPosition());
+
+    }
 
 }

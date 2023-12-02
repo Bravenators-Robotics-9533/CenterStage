@@ -98,14 +98,16 @@ public class Teleop extends LinearOpMode {
 
             this.liftMultiComponentSystem.update();
             this.suspensionLiftComponent.update();
-            this.suspensionLiftComponent.telemetry(telemetry);
+//            this.suspensionLiftComponent.telemetry(telemetry);
+
+            this.liftMultiComponentSystem.telemetry(telemetry);
 
             driverGamePad.update();
             operatorGamePad.update();
-
-            telemetry.addData("Pixel Pouch Status", pixelPouchComponent.getPixelPouchStatus());
-            telemetry.addData("Lift Position", liftComponent.getCurrentPosition());
-            telemetry.addData("Bot Heading", drive.getRawExternalHeading());
+//
+//            telemetry.addData("Pixel Pouch Status", pixelPouchComponent.getPixelPouchStatus());
+//            telemetry.addData("Lift Position", liftComponent.getCurrentPosition());
+//            telemetry.addData("Bot Heading", drive.getRawExternalHeading());
             telemetry.update();
 
         }
@@ -174,14 +176,14 @@ public class Teleop extends LinearOpMode {
 
             case FtcGamePad.GAMEPAD_DPAD_LEFT:
                 if(isPressed) {
-                    liftComponent.goToEncoderPosition(LiftComponent.LIFT_POSITION_ARM_SAFE, LiftComponent.LIFT_SPEED);
+                    liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE);
                 }
 
                 break;
 
             case FtcGamePad.GAMEPAD_DPAD_UP:
                 if(isPressed) {
-                    liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE);
+                    liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE);
                 }
 
                 break;
