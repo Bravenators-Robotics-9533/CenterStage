@@ -19,6 +19,7 @@ import com.qualcomm.robotcore.util.Range;
 import roadrunner.drive.MecanumDrive;
 
 @TeleOp(name="Teleop", group="Competition")
+@com.acmerobotics.dashboard.config.Config
 public class Teleop extends LinearOpMode {
 
     private static final double MAX_ROBOT_SPEED = 1.0;
@@ -38,8 +39,12 @@ public class Teleop extends LinearOpMode {
 
     private LiftMultiComponentSystem liftMultiComponentSystem;
 
+    public static double LIVE_ADJUST_MULTIPLE_CONSTANT = 1.0;
+
     private boolean isSlowModeActive = false;
     private boolean shouldUseMasterController = false;
+
+    private float deltaTime = 0;
 
     private double offsetHeading = 0;
 
@@ -88,7 +93,14 @@ public class Teleop extends LinearOpMode {
 
         waitForStart();
 
+        long currentTime, previousTime = System.currentTimeMillis();
+
         while (opModeIsActive()) {
+
+            // Calculate delta-time
+            currentTime = System.currentTimeMillis();
+            this.deltaTime = (currentTime - previousTime) / 1000.0f;
+            previousTime = currentTime;
 
             this.handleDrive();
             this.handleLift();
@@ -107,9 +119,11 @@ public class Teleop extends LinearOpMode {
             telemetry.update();
 
         }
+
     }
 
     private boolean isDriverPressingB = false;
+    private boolean isDriverPressingY = false;
 
     private void OnDriverGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
 
@@ -132,48 +146,57 @@ public class Teleop extends LinearOpMode {
 
                 break;
 
+            case FtcGamePad.GAMEPAD_Y:
+                isDriverPressingY = isPressed;
+
+                break;
+
         }
 
     }
-
-    private boolean isLeftBumperPressed = false;
-    private boolean isRightBumperPressed = false;
 
     private void OnOperatorGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
 
         if(shouldUseMasterController) // Forward Controls to Driver
             this.OnDriverGamePadChange(gamepad, button, isPressed);
 
-        boolean shouldStopIntake = true;
+        boolean isRightBumper   = false;
+        boolean isLeftBumper    = false;
 
         switch(button) {
 
-            case FtcGamePad.GAMEPAD_A:
+            case FtcGamePad.GAMEPAD_A: // Run Intake Forward
                 if(isPressed) {
                     intakeComponent.runIntakeForward();
-                    shouldStopIntake = false;
+                } else {
+                    intakeComponent.stopIntakeMotor();
                 }
 
                 break;
 
-            case FtcGamePad.GAMEPAD_Y:
-                if(isPressed) {
-                    intakeComponent.runIntakeBackwards();
-                    shouldStopIntake = false;
+            case FtcGamePad.GAMEPAD_Y: // Launch Plane if driver is also pressing
+                if(isPressed && isDriverPressingY) {
+                    this.airplaneLauncher.launch();
                 }
 
                 break;
 
-            case FtcGamePad.GAMEPAD_B:
+            case FtcGamePad.GAMEPAD_B: // Suspend If Driver is also pressing
                 if(isPressed && isDriverPressingB) {
                     this.suspensionLiftComponent.runLockSequence();
                 }
 
                 break;
 
-            case FtcGamePad.GAMEPAD_X:
+            case FtcGamePad.GAMEPAD_X: // Release Pixel
                 if(isPressed)
                     pixelPouchComponent.requestRelease();
+
+                break;
+
+            case FtcGamePad.GAMEPAD_DPAD_DOWN:
+                if(isPressed)
+                    liftMultiComponentSystem.goToIntakePosition();
 
                 break;
 
@@ -198,17 +221,12 @@ public class Teleop extends LinearOpMode {
 
                 break;
 
-            case FtcGamePad.GAMEPAD_DPAD_DOWN:
-                if(isPressed)
-                    liftMultiComponentSystem.goToIntakePosition();
-
-                break;
-
             case FtcGamePad.GAMEPAD_RBUMPER:
-                isRightBumperPressed = isPressed;
+                isRightBumper = isPressed;
                 break;
+
             case FtcGamePad.GAMEPAD_LBUMPER:
-                isLeftBumperPressed = isPressed;
+                isLeftBumper = isPressed;
                 break;
 
             case FtcGamePad.GAMEPAD_BACK:
@@ -219,15 +237,7 @@ public class Teleop extends LinearOpMode {
 
         }
 
-        if(shouldStopIntake && intakeComponent.isRunning()) {
-            this.intakeComponent.stopIntakeMotor();
-        }
-
-        if(isLeftBumperPressed && isRightBumperPressed) {
-
-            this.airplaneLauncher.launch();
-
-        }
+        this.suspensionLiftComponent.setManualPower((isRightBumper ? 1 : 0) - (isLeftBumper ? 1 : 0));
 
     }
 
@@ -278,11 +288,8 @@ public class Teleop extends LinearOpMode {
 
     private void handleLift() {
 
-        Gamepad gamepad = shouldUseMasterController ? gamepad1 : gamepad2;
-
-        double manualLiftPower = Range.clip(Math.pow(gamepad.right_trigger - gamepad.left_trigger, 3), -1.0, 1.0);
-
-        this.suspensionLiftComponent.setManualPower(manualLiftPower);
+        double liveAdjust = Range.clip(Math.pow(gamepad1.right_trigger - gamepad1.left_trigger, 3), -1.0, 1.0);
+        this.liftMultiComponentSystem.liveAdjustLiftHeight((int) (liveAdjust * LIVE_ADJUST_MULTIPLE_CONSTANT * this.deltaTime));
 
     }
 

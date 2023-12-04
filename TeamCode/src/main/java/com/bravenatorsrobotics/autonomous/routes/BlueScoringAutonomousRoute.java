@@ -116,7 +116,7 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
         }
 
 
-        idle();
+        this.idle();
 
     }
 

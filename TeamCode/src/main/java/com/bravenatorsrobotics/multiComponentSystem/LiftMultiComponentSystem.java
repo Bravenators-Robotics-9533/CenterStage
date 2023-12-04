@@ -31,6 +31,7 @@ public class LiftMultiComponentSystem {
     private State state = State.AT_INTAKE_POSITION;
 
     private int targetExternalLiftPosition = LiftComponent.LIFT_POSITION_ARM_SAFE;
+    private int liveExternalLiftPosition = targetExternalLiftPosition;
 
     public LiftMultiComponentSystem(LiftComponent liftComponent, SwingArmComponent swingArmComponent, PixelPouchComponent pixelPouchComponent) {
         this.liftComponent = liftComponent;
@@ -42,6 +43,7 @@ public class LiftMultiComponentSystem {
 
         this.targetPosition = TargetPosition.SCORING_POSITION;
         this.targetExternalLiftPosition = targetExternalLiftPosition;
+        this.liveExternalLiftPosition = targetExternalLiftPosition;
 
     }
 
@@ -121,7 +123,15 @@ public class LiftMultiComponentSystem {
                 break;
 
             case AT_SCORING_POSITION:
-                break; // DONE
+
+                // Live Adjust Lift Height
+                if(!this.liftComponent.isBusy() && this.liftComponent.getCurrentPosition() != this.liveExternalLiftPosition) {
+
+                    this.liftComponent.goToEncoderPositionAsync(this.liveExternalLiftPosition, LiftComponent.LIFT_SPEED);
+
+                }
+
+                break;
 
         }
 
@@ -185,6 +195,8 @@ public class LiftMultiComponentSystem {
         }
 
     }
+
+    public void liveAdjustLiftHeight(int encoderTicks) { this.liveExternalLiftPosition += encoderTicks; }
 
     public boolean isBusy() {
         return this.swingArmComponent.isMotorBusy();
