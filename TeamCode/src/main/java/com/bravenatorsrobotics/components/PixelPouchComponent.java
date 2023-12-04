@@ -126,8 +126,8 @@ public class PixelPouchComponent {
 
     public double getPouchServoPosition() { return this.pouchServo.getPosition(); }
 
-    public boolean servoAtScoringPosition() { return this.pouchServo.getPosition() == POUCH_SCORING_POSITION; }
-    public boolean servoAtIntakePosition() { return this.pouchServo.getPosition() == POUCH_INTAKE_POSITION; }
+    public boolean isServoAtScoringPosition() { return this.pouchServo.getPosition() == POUCH_SCORING_POSITION; }
+    public boolean isServoAtIntakePosition() { return this.pouchServo.getPosition() == POUCH_INTAKE_POSITION; }
 
     public void requestRelease() {
         pixelPouchStatus = PixelPouchStatus.OPEN_REQUESTED;

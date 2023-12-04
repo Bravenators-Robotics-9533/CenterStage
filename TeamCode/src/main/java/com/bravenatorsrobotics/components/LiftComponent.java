@@ -38,7 +38,7 @@ public class LiftComponent {
 
     }
 
-    public void goToEncoderPosition(int encoderPosition, double power) {
+    public void goToEncoderPositionAsync(int encoderPosition, double power) {
 
         liftMotor.setTargetPosition(encoderPosition);
         liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);

@@ -1,7 +1,6 @@
 package com.bravenatorsrobotics.components;
 
 import com.bravenatorsrobotics.HardwareMapIdentities;
-import com.bravenatorsrobotics.Teleop;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -13,8 +12,8 @@ public class SwingArmComponent {
 
     public static final double SWING_ARM_MOTOR_SPEED = 1.0;
 
-    public static final int SWING_ARM_ZERO_POSITION = 0;
-    public static final int SWING_ARM_OUT_POSITION = 750;
+    public static final int SWING_ARM_INTAKE_POSITION = 0;
+    public static final int SWING_ARM_SCORING_POSITION = 750;
 
     private static final int SWING_ARM_TOLERANCE = 10;
 
@@ -23,7 +22,7 @@ public class SwingArmComponent {
     private enum State {
 
         INTAKE,
-        RELEASE
+        SCORING
 
     }
 
@@ -46,14 +45,14 @@ public class SwingArmComponent {
         switch (this.currentState) {
 
             case INTAKE:
-                this.swingArmMotor.setTargetPosition(SWING_ARM_ZERO_POSITION);
+                this.swingArmMotor.setTargetPosition(SWING_ARM_INTAKE_POSITION);
                 this.swingArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 this.swingArmMotor.setPower(SWING_ARM_MOTOR_SPEED);
 
                 break;
 
-            case RELEASE:
-                this.swingArmMotor.setTargetPosition(SWING_ARM_OUT_POSITION);
+            case SCORING:
+                this.swingArmMotor.setTargetPosition(SWING_ARM_SCORING_POSITION);
                 this.swingArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 this.swingArmMotor.setPower(SWING_ARM_MOTOR_SPEED);
 
@@ -70,7 +69,7 @@ public class SwingArmComponent {
 
     public void goToScoringPosition() {
 
-        this.currentState = State.RELEASE;
+        this.currentState = State.SCORING;
 
     }
 
@@ -79,6 +78,8 @@ public class SwingArmComponent {
         this.currentState = State.INTAKE;
 
     }
+
+    public int getSwingArmMotorPosition() { return this.swingArmMotor.getCurrentPosition(); }
 
     public boolean isMotorBusy() { return this.swingArmMotor.isBusy(); }
 

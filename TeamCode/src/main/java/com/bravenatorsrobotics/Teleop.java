@@ -103,10 +103,7 @@ public class Teleop extends LinearOpMode {
 
             driverGamePad.update();
             operatorGamePad.update();
-//
-//            telemetry.addData("Pixel Pouch Status", pixelPouchComponent.getPixelPouchStatus());
-//            telemetry.addData("Lift Position", liftComponent.getCurrentPosition());
-//            telemetry.addData("Bot Heading", drive.getRawExternalHeading());
+
             telemetry.update();
 
         }
