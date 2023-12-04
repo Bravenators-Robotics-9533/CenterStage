@@ -60,7 +60,7 @@ public class Teleop extends LinearOpMode {
 
         this.intakeComponent = new IntakeComponent(super.hardwareMap);
 
-        this.pixelPouchComponent = new PixelPouchComponent(super.hardwareMap);
+        this.pixelPouchComponent = new PixelPouchComponent(super.hardwareMap, true);
         this.pixelPouchComponent.addOnClampCallback(this::onClampCallback);
         this.pixelPouchComponent.initializeServo();
 
@@ -98,7 +98,6 @@ public class Teleop extends LinearOpMode {
 
             this.liftMultiComponentSystem.update();
             this.suspensionLiftComponent.update();
-//            this.suspensionLiftComponent.telemetry(telemetry);
 
             this.liftMultiComponentSystem.telemetry(telemetry);
 
@@ -113,6 +112,8 @@ public class Teleop extends LinearOpMode {
         }
     }
 
+    private boolean isDriverPressingB = false;
+
     private void OnDriverGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
 
         switch (button) {
@@ -126,6 +127,11 @@ public class Teleop extends LinearOpMode {
             case FtcGamePad.GAMEPAD_RBUMPER:
                 if(isPressed)
                     isSlowModeActive = !isSlowModeActive;
+
+                break;
+
+            case FtcGamePad.GAMEPAD_B:
+                isDriverPressingB = isPressed;
 
                 break;
 
@@ -162,7 +168,7 @@ public class Teleop extends LinearOpMode {
                 break;
 
             case FtcGamePad.GAMEPAD_B:
-                if(isPressed) {
+                if(isPressed && isDriverPressingB) {
                     this.suspensionLiftComponent.runLockSequence();
                 }
 

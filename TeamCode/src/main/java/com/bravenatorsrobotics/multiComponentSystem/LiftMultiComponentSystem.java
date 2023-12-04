@@ -112,7 +112,7 @@ public class LiftMultiComponentSystem {
                 break;
 
             case AWAITING_ARM_SWING:
-                if (!this.swingArmComponent.isMotorBusy() && this.pixelPouchComponent.servoAtScoringPosition()) {
+                if (!this.swingArmComponent.isMotorBusy()) {
 
                     if (timeoutTimer.seconds() > 2)
                         System.err.println("TIMEOUT HIT");
@@ -184,8 +184,7 @@ public class LiftMultiComponentSystem {
 
             case AWAITING_ARM_SWING:
 
-                if ((!this.swingArmComponent.isMotorBusy() &&
-                        this.pixelPouchComponent.getPouchServoPosition() == PixelPouchComponent.POUCH_SCORING_POSITION)
+                if ((!this.swingArmComponent.isMotorBusy())
                         || timeoutTimer.seconds() > 2) {
 
                     if (timeoutTimer.seconds() > 2)
@@ -226,6 +225,10 @@ public class LiftMultiComponentSystem {
 
         }
 
+    }
+
+    public boolean isBusy() {
+        return this.swingArmComponent.isMotorBusy();
     }
 
     public void telemetry(Telemetry telemetry) {

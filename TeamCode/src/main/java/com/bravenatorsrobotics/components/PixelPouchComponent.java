@@ -14,12 +14,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 public class PixelPouchComponent {
 
     public static final double CLAMP_OPEN_POSITION = 1.0;
-    public static final double CLAMP_CLOSE_POSITION = 0.75;
+    public static final double CLAMP_CLOSE_POSITION = 0.7;
 
     public static final double POUCH_INTAKE_POSITION = 0;
-    public static final double POUCH_SCORING_POSITION = 0.5;
+    public static final double POUCH_SCORING_POSITION = 0.7;
 
-    private static final double POUCH_SENSOR_DISTANCE = 22.0;
+    private static final double POUCH_SENSOR_DISTANCE = 24;
 
     private final CallbackSystem onClampCallbackSystem = new CallbackSystem();
 
@@ -41,7 +41,11 @@ public class PixelPouchComponent {
     private final Servo pouchServo;
     private final RevColorSensorV3 pouchColorSensor;
 
-    public PixelPouchComponent(HardwareMap hardwareMap) {
+    private final boolean shouldDetect;
+
+    public PixelPouchComponent(HardwareMap hardwareMap, boolean shouldDetect) {
+
+        this.shouldDetect = shouldDetect;
 
         this.clampServo         = hardwareMap.get(Servo.class, HardwareMapIdentities.SERVO_CLAMP);
         this.pouchServo         = hardwareMap.get(Servo.class, HardwareMapIdentities.POUCH_SERVO);
@@ -78,7 +82,7 @@ public class PixelPouchComponent {
                 break;
 
             case OPEN:
-                if(isPixelDetected) {
+                if(isPixelDetected && shouldDetect) {
                     pixelPouchStatus = PixelPouchStatus.CLOSE_REQUESTED;
                     clampServo.setPosition(CLAMP_CLOSE_POSITION);
                 }
@@ -96,7 +100,7 @@ public class PixelPouchComponent {
                 break;
 
             case CLOSED:
-                if(!isPixelDetected)
+                if(!isPixelDetected && shouldDetect)
                     this.pixelPouchStatus = PixelPouchStatus.OPEN_REQUESTED;
 
                 break;

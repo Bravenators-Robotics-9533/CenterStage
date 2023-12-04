@@ -66,7 +66,7 @@ public class Auto extends LinearOpMode {
         this.swingArmComponent = new SwingArmComponent(this.hardwareMap);
 
         // Pixel Pouch
-        this.pixelPouchComponent = new PixelPouchComponent(this.hardwareMap);
+        this.pixelPouchComponent = new PixelPouchComponent(this.hardwareMap, false);
         this.pixelPouchComponent.initializeServo();
         this.pixelPouchComponent.requestClose();
         this.pixelPouchComponent.setClampPosition(PixelPouchComponent.CLAMP_CLOSE_POSITION);

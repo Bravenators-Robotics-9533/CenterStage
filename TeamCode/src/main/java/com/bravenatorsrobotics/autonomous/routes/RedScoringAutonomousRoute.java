@@ -24,6 +24,9 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
     private TrajectorySequence centerLineUpBoard;
     private TrajectorySequence rightLineUpBoard;
 
+    private double DRIVE_TO_BOARD_TO_SCORE_DIST = 7;
+    private double WAIT_TIME_FOR_LIFT = 4.0;
+
     public RedScoringAutonomousRoute(Auto auto, MecanumDrive drive) {
         super(auto, drive);
     }
@@ -40,14 +43,15 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             .build();
 
         this.leftLineUpBoard = drive.trajectorySequenceBuilder(this.leftFirstSequence.end())
-                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
-                .lineToLinearHeading(new Pose2d(54, -20, Math.toRadians(180)))
+                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE))
+                .waitSeconds(WAIT_TIME_FOR_LIFT)
+                .lineToLinearHeading(new Pose2d(53.5, -23.5, Math.toRadians(180)))
                 .waitSeconds(0.5)
                 .addTemporalMarker(() -> auto.pixelPouchComponent.requestRelease())
                 .waitSeconds(0.25)
-                .forward(8)
+                .forward(DRIVE_TO_BOARD_TO_SCORE_DIST)
                 .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToIntakePosition())
-                .strafeLeft(36)
+                .strafeLeft( 36)
                 .back(14)
             .build();
 
@@ -59,14 +63,15 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             .build();
 
         this.centerLineUpBoard = drive.trajectorySequenceBuilder(this.centerFirstSequence.end())
-                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
-                .lineToLinearHeading(new Pose2d(49, -33, Math.toRadians(180)))
+                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE))
+                .waitSeconds(WAIT_TIME_FOR_LIFT)
+                .lineToLinearHeading(new Pose2d(49, -32, Math.toRadians(180)))
                 .waitSeconds(0.5)
                 .addTemporalMarker(() -> auto.pixelPouchComponent.requestRelease())
                 .waitSeconds(0.25)
-                .forward(8)
+                .forward(DRIVE_TO_BOARD_TO_SCORE_DIST)
                 .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToIntakePosition())
-                .strafeLeft(28)
+                .strafeLeft(29)
                 .back(14)
             .build();
 
@@ -79,25 +84,28 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             .build();
 
         this.rightLineUpBoard = drive.trajectorySequenceBuilder(this.rightFirstSequence.end())
-                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
-                .lineToLinearHeading(new Pose2d(50, -36, Math.toRadians(180)))
+                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE))
+                .waitSeconds(WAIT_TIME_FOR_LIFT)
+                .lineToLinearHeading(new Pose2d(50, -33, Math.toRadians(180)))
                 .waitSeconds(0.5)
                 .addTemporalMarker(() -> auto.pixelPouchComponent.requestRelease())
                 .waitSeconds(0.25)
-                .forward(8)
+                .forward(DRIVE_TO_BOARD_TO_SCORE_DIST)
                 .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToIntakePosition())
-                .strafeLeft(17.5)
+                .strafeLeft(19.5)
                 .back(14)
             .build();
     }
 
     private void idle() {
         while(opModeIsActive() && drive.isBusy()) {
-            drive.update();
-
-            auto.swingArmComponent.update();
-            auto.liftMultiComponentSystem.update();
             auto.pixelPouchComponent.update();
+            auto.swingArmComponent.update();
+
+            auto.liftMultiComponentSystem.update();
+            auto.liftMultiComponentSystem.telemetry(auto.telemetry);
+
+            drive.update();
         }
     }
 
