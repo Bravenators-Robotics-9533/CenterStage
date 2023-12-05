@@ -12,6 +12,7 @@ public class HardwareMapIdentities {
 
     public static final String SUSPENSION_LIFT = "suspensionLift";
     public static final String SUSPENSION_LIFT_GUIDE = "suspensionGuide";
+    public static final String SUSPENSION_LIFT_MAGNETIC_LIMIT_SENSOR = "suspensionMagneticLimit";
 
     public static final String LEFT_LOCKING_SERVO = "leftLock";
     public static final String RIGHT_LOCKING_SERVO = "rightLock";

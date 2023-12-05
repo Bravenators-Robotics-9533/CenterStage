@@ -1,6 +1,7 @@
 package com.bravenatorsrobotics.components;
 
 import com.bravenatorsrobotics.HardwareMapIdentities;
+import com.qualcomm.hardware.rev.RevTouchSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -24,6 +25,8 @@ public class SuspensionLiftComponent {
     private final Servo leftLockingServo;
     private final Servo rightLockingServo;
 
+    private final RevTouchSensor magneticLimitSensor;
+
     private boolean isLockingSequence = false;
     private boolean resetTimeout = false;
 
@@ -45,11 +48,11 @@ public class SuspensionLiftComponent {
         this.leftLockingServo.setDirection(Servo.Direction.FORWARD);
         this.rightLockingServo.setDirection(Servo.Direction.REVERSE);
 
+        this.magneticLimitSensor = hardwareMap.get(RevTouchSensor.class, HardwareMapIdentities.SUSPENSION_LIFT_MAGNETIC_LIMIT_SENSOR);
+
     }
 
     public void initializeServos() {
-
-//        unlockLiftLocks();
 
     }
 
@@ -65,34 +68,35 @@ public class SuspensionLiftComponent {
 
     }
 
-    private ElapsedTime timer = new ElapsedTime();
-    private ElapsedTime servoTimer = new ElapsedTime();
+//    private final ElapsedTime timer = new ElapsedTime();
+    private final ElapsedTime servoTimer = new ElapsedTime();
 
     public void update() {
 
         if(isLockingSequence) {
 
-            if(!this.suspensionLift.isBusy()) {
+            if(this.magneticLimitSensor.isPressed()) {
 
-                this.lockLiftServos();
+                this.suspensionLift.setPower(0);
                 this.suspensionLiftGuideServo.setPosition(0);
 
-                this.resetTimeout = true;
-                timer.reset();
+                this.lockLiftServos();
 
                 this.isLockingSequence = false;
 
+//                this.resetTimeout = true;
+//                timer.reset();
             }
 
         }
 
-        if(resetTimeout) {
-            if(timer.seconds() > 2) {
-                this.suspensionLift.setPower(0);
-                this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                this.resetTimeout = false;
-            }
-        }
+//        if(resetTimeout) {
+//            if(timer.seconds() > 2) {
+//                this.suspensionLift.setPower(0);
+//                this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//                this.resetTimeout = false;
+//            }
+//        }
 
         if(areServosLocking) {
             if(servoTimer.seconds() >= SERVO_MOVE_TIME_SECONDS) {
@@ -108,9 +112,8 @@ public class SuspensionLiftComponent {
 
         isLockingSequence = true;
 
-        this.suspensionLift.setTargetPosition(0);
-        this.suspensionLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        this.suspensionLift.setVelocity(MOTOR_VELOCITY);
+        this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        this.suspensionLift.setVelocity(-MOTOR_VELOCITY);
         this.suspensionLiftGuideServo.setPosition(-1);
 
     }
