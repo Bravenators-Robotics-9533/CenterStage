@@ -129,28 +129,18 @@ public class Teleop extends LinearOpMode {
 
         switch (button) {
 
-            case FtcGamePad.GAMEPAD_BACK:
-                if(isPressed)
+            case FtcGamePad.GAMEPAD_BACK -> {
+                if (isPressed)
                     offsetHeading = drive.getRawExternalHeading();
+            }
 
-                break;
-
-            case FtcGamePad.GAMEPAD_RBUMPER:
-                if(isPressed)
+            case FtcGamePad.GAMEPAD_RBUMPER -> {
+                if (isPressed)
                     isSlowModeActive = !isSlowModeActive;
+            }
 
-                break;
-
-            case FtcGamePad.GAMEPAD_B:
-                isDriverPressingB = isPressed;
-
-                break;
-
-            case FtcGamePad.GAMEPAD_Y:
-                isDriverPressingY = isPressed;
-
-                break;
-
+            case FtcGamePad.GAMEPAD_B -> isDriverPressingB = isPressed;
+            case FtcGamePad.GAMEPAD_Y -> isDriverPressingY = isPressed;
         }
 
     }
@@ -163,78 +153,63 @@ public class Teleop extends LinearOpMode {
         boolean isRightBumper   = false;
         boolean isLeftBumper    = false;
 
-        switch(button) {
+        switch (button) {
 
-            case FtcGamePad.GAMEPAD_A: // Run Intake Forward
-                if(isPressed) {
+            case FtcGamePad.GAMEPAD_A -> { // Run Intake Forward
+                if (isPressed) {
                     intakeComponent.runIntakeForward();
                 } else {
                     intakeComponent.stopIntakeMotor();
                 }
+            }
 
-                break;
-
-            case FtcGamePad.GAMEPAD_Y: // Launch Plane if driver is also pressing
-                if(isPressed && isDriverPressingY) {
+            case FtcGamePad.GAMEPAD_Y -> { // Launch Plane if driver is also pressing
+                if (isPressed && isDriverPressingY) {
                     this.airplaneLauncher.launch();
                 }
+            }
 
-                break;
-
-            case FtcGamePad.GAMEPAD_B: // Suspend If Driver is also pressing
-                if(isPressed && isDriverPressingB) {
+            case FtcGamePad.GAMEPAD_B -> { // Suspend If Driver is also pressing
+                if (isPressed && isDriverPressingB) {
                     this.suspensionLiftComponent.runLockSequence();
                 }
+            }
 
-                break;
-
-            case FtcGamePad.GAMEPAD_X: // Release Pixel
-                if(isPressed)
+            case FtcGamePad.GAMEPAD_X -> { // Release Pixel
+                if (isPressed)
                     pixelPouchComponent.requestRelease();
+            }
 
-                break;
-
-            case FtcGamePad.GAMEPAD_DPAD_DOWN:
-                if(isPressed)
+            case FtcGamePad.GAMEPAD_DPAD_DOWN -> {
+                if (isPressed)
                     liftMultiComponentSystem.goToIntakePosition();
+            }
 
-                break;
-
-            case FtcGamePad.GAMEPAD_DPAD_LEFT:
-                if(isPressed) {
+            case FtcGamePad.GAMEPAD_DPAD_LEFT -> {
+                if (isPressed) {
                     liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE);
                 }
+            }
 
-                break;
-
-            case FtcGamePad.GAMEPAD_DPAD_UP:
-                if(isPressed) {
+            case FtcGamePad.GAMEPAD_DPAD_UP -> {
+                if (isPressed) {
                     liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE);
                 }
+            }
 
-                break;
-
-            case FtcGamePad.GAMEPAD_DPAD_RIGHT:
-                if(isPressed) {
+            case FtcGamePad.GAMEPAD_DPAD_RIGHT -> {
+                if (isPressed) {
                     liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_UPPER_RELEASE);
                 }
+            }
 
-                break;
+            case FtcGamePad.GAMEPAD_RBUMPER -> isRightBumper = isPressed;
+            case FtcGamePad.GAMEPAD_LBUMPER -> isLeftBumper = isPressed;
 
-            case FtcGamePad.GAMEPAD_RBUMPER:
-                isRightBumper = isPressed;
-                break;
-
-            case FtcGamePad.GAMEPAD_LBUMPER:
-                isLeftBumper = isPressed;
-                break;
-
-            case FtcGamePad.GAMEPAD_BACK:
-                if(isPressed)
+            case FtcGamePad.GAMEPAD_BACK -> {
+                if (isPressed)
                     suspensionLiftComponent.unlockLiftLocks();
-
-                break;
-
+            }
         }
 
         this.suspensionLiftComponent.setManualPower((isRightBumper ? 1 : 0) - (isLeftBumper ? 1 : 0));
