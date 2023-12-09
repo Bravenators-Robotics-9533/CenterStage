@@ -39,7 +39,7 @@ public class Teleop extends LinearOpMode {
 
     private LiftMultiComponentSystem liftMultiComponentSystem;
 
-    public static double LIVE_ADJUST_MULTIPLE_CONSTANT = 1.0;
+    public static double LIVE_ADJUST_MULTIPLE_CONSTANT = 1000.0;
 
     private boolean isSlowModeActive = false;
     private boolean shouldUseMasterController = false;
@@ -122,9 +122,6 @@ public class Teleop extends LinearOpMode {
 
     }
 
-    private boolean isDriverPressingB = false;
-    private boolean isDriverPressingY = false;
-
     private void OnDriverGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
 
         switch (button) {
@@ -139,19 +136,17 @@ public class Teleop extends LinearOpMode {
                     isSlowModeActive = !isSlowModeActive;
             }
 
-            case FtcGamePad.GAMEPAD_B -> isDriverPressingB = isPressed;
-            case FtcGamePad.GAMEPAD_Y -> isDriverPressingY = isPressed;
         }
 
     }
+
+    private boolean isRightBumper = false;
+    private boolean isLeftBumper = false;
 
     private void OnOperatorGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
 
         if(shouldUseMasterController) // Forward Controls to Driver
             this.OnDriverGamePadChange(gamepad, button, isPressed);
-
-        boolean isRightBumper   = false;
-        boolean isLeftBumper    = false;
 
         switch (button) {
 
@@ -163,14 +158,8 @@ public class Teleop extends LinearOpMode {
                 }
             }
 
-            case FtcGamePad.GAMEPAD_Y -> { // Launch Plane if driver is also pressing
-                if (isPressed && isDriverPressingY) {
-                    this.airplaneLauncher.launch();
-                }
-            }
-
             case FtcGamePad.GAMEPAD_B -> { // Suspend If Driver is also pressing
-                if (isPressed && isDriverPressingB) {
+                if (isPressed && !this.suspensionLiftComponent.isLimitSensorTriggered()) {
                     this.suspensionLiftComponent.runLockSequence();
                 }
             }
@@ -212,7 +201,8 @@ public class Teleop extends LinearOpMode {
             }
         }
 
-        this.suspensionLiftComponent.setManualPower((isRightBumper ? 1 : 0) - (isLeftBumper ? 1 : 0));
+        if(isRightBumper && isLeftBumper)
+            this.airplaneLauncher.launch();
 
     }
 
@@ -263,8 +253,9 @@ public class Teleop extends LinearOpMode {
 
     private void handleLift() {
 
-        double liveAdjust = Range.clip(Math.pow(gamepad1.right_trigger - gamepad1.left_trigger, 3), -1.0, 1.0);
-        this.liftMultiComponentSystem.liveAdjustLiftHeight((int) (liveAdjust * LIVE_ADJUST_MULTIPLE_CONSTANT * this.deltaTime));
+        double suspensionLiftPower = Range.clip(Math.pow(gamepad2.right_trigger - gamepad2.left_trigger, 3), -1.0, 1.0);
+        this.suspensionLiftComponent.setManualPower(suspensionLiftPower);
+//        this.liftMultiComponentSystem.liveAdjustLiftHeight((int) (liveAdjust * LIVE_ADJUST_MULTIPLE_CONSTANT * this.deltaTime));
 
     }
 

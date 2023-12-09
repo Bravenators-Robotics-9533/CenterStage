@@ -19,7 +19,7 @@ public class PixelPouchComponent {
     public static final double POUCH_INTAKE_POSITION = 0;
     public static final double POUCH_SCORING_POSITION = 0.7;
 
-    private static final double POUCH_SENSOR_DISTANCE = 24;
+    private static final double POUCH_SENSOR_DISTANCE = 25;
 
     private final CallbackSystem onClampCallbackSystem = new CallbackSystem();
 

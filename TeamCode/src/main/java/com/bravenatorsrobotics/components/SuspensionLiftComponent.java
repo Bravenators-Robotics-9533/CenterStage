@@ -28,7 +28,6 @@ public class SuspensionLiftComponent {
     private final RevTouchSensor magneticLimitSensor;
 
     private boolean isLockingSequence = false;
-    private boolean resetTimeout = false;
 
     private boolean areServosLocking = false;
 
@@ -58,7 +57,7 @@ public class SuspensionLiftComponent {
 
     public void setManualPower(double power) {
 
-        if(isLockingSequence || resetTimeout)
+        if(isLockingSequence)
             return;
 
         double scaledRange = (power + 1.0) / 2.0;
@@ -83,25 +82,15 @@ public class SuspensionLiftComponent {
                 this.lockLiftServos();
 
                 this.isLockingSequence = false;
-
-//                this.resetTimeout = true;
-//                timer.reset();
             }
 
         }
-
-//        if(resetTimeout) {
-//            if(timer.seconds() > 2) {
-//                this.suspensionLift.setPower(0);
-//                this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//                this.resetTimeout = false;
-//            }
-//        }
 
         if(areServosLocking) {
             if(servoTimer.seconds() >= SERVO_MOVE_TIME_SECONDS) {
                 this.leftLockingServo.setPosition(0.5);
                 this.rightLockingServo.setPosition(0.5);
+                this.suspensionLiftGuideServo.setPosition(0.5);
                 areServosLocking = false;
             }
         }
@@ -142,4 +131,7 @@ public class SuspensionLiftComponent {
         telemetry.addData("Lift Pos", this.suspensionLift.getCurrentPosition());
     }
 
+    public boolean isLimitSensorTriggered() {
+        return this.magneticLimitSensor.isPressed();
+    }
 }

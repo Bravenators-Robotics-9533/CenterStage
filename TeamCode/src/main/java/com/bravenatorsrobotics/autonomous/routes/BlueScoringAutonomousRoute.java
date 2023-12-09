@@ -34,7 +34,7 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
                 .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
                 .waitSeconds(0.25)
                 .lineTo(new Vector2d(23, 54))
-                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE))
+                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
                 .waitSeconds(WAIT_SECONDS)
                 .splineToLinearHeading(new Pose2d(23 + 17, 54 - 18, Math.toRadians(180)), Math.toRadians(180))
                 .lineTo(new Vector2d(23 + 30, 54 - 16))
@@ -54,7 +54,7 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
                 .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
                 .waitSeconds(0.25)
                 .strafeLeft(7)
-                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE))
+                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
                 .waitSeconds(WAIT_SECONDS)
                 .splineToLinearHeading(new Pose2d(47, 70 - 8 - 32 -11, Math.toRadians(180)), Math.toRadians(0))
                 .lineTo(new Vector2d(50.5, 70 - 8 - 32 - 11))
@@ -72,7 +72,7 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
                 .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
                 .waitSeconds(0.25)
                 .lineTo(new Vector2d(32, 32 - 12.5))
-                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE))
+                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
                 .waitSeconds(WAIT_SECONDS)
                 .splineToLinearHeading(new Pose2d(35, 32, Math.toRadians(180)), Math.toRadians(180))
                 .lineTo(new Vector2d(35 + 18.5, 32)) // Line To Board
@@ -83,7 +83,7 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
                 .lineTo(new Vector2d(35, 25))
                 .strafeRight(32)
                 .back(26)
-                .build();
+            .build();
 
     }
 
@@ -103,18 +103,10 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
     public void run(TeamPropLocation teamPropLocation) {
 
         switch (teamPropLocation) {
-            case CENTER:
-                drive.followTrajectorySequenceAsync(this.centerFirstSequence);
-                break;
-            case RIGHT:
-                drive.followTrajectorySequenceAsync(this.rightFirstSequence);
-                break;
-            default:
-            case LEFT:
-                drive.followTrajectorySequenceAsync(this.leftFirstSequence);
-                break;
+            case CENTER -> drive.followTrajectorySequenceAsync(this.centerFirstSequence);
+            case RIGHT -> drive.followTrajectorySequenceAsync(this.rightFirstSequence);
+            case LEFT -> drive.followTrajectorySequenceAsync(this.leftFirstSequence);
         }
-
 
         this.idle();
 
