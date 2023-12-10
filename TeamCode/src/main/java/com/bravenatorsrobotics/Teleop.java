@@ -1,5 +1,7 @@
 package com.bravenatorsrobotics;
 
+import android.graphics.Color;
+
 import com.bravenatorsrobotics.components.AirplaneLauncher;
 import com.bravenatorsrobotics.components.IntakeComponent;
 import com.bravenatorsrobotics.components.LiftComponent;
@@ -45,6 +47,7 @@ public class Teleop extends LinearOpMode {
     private boolean isSlowModeActive = false;
     private boolean shouldUseMasterController = false;
     private boolean shouldOverrideSuspensionSlow = false;
+    private boolean didAutoChangeSlowMode = false;
 
     private float deltaTime = 0;
 
@@ -69,6 +72,7 @@ public class Teleop extends LinearOpMode {
 
         this.pixelPouchComponent = new PixelPouchComponent(super.hardwareMap, true);
         this.pixelPouchComponent.addOnClampCallback(this::onClampCallback);
+        this.pixelPouchComponent.addOnReleaseCallback(this::onReleaseCallback);
         this.pixelPouchComponent.initializeServo();
 
         this.liftComponent = new LiftComponent(super.hardwareMap);
@@ -114,6 +118,18 @@ public class Teleop extends LinearOpMode {
             this.suspensionLiftComponent.update();
 
             this.liftMultiComponentSystem.telemetry(telemetry);
+
+            LiftMultiComponentSystem.State currentLiftState = this.liftMultiComponentSystem.getCurrentState();
+
+            this.pixelPouchComponent.setShouldDetect(currentLiftState == LiftMultiComponentSystem.State.AT_INTAKE_POSITION);
+
+            if(currentLiftState == LiftMultiComponentSystem.State.AT_SCORING_POSITION) {
+                this.didAutoChangeSlowMode = true;
+                this.isSlowModeActive = true;
+            } else if(this.didAutoChangeSlowMode) {
+                this.isSlowModeActive = false;
+                this.didAutoChangeSlowMode = false;
+            }
 
             driverGamePad.update();
             operatorGamePad.update();
@@ -261,13 +277,56 @@ public class Teleop extends LinearOpMode {
 
     }
 
+    private enum PixelColor {
+
+        YELLOW,
+        GREEN,
+        WHITE,
+        PURPLE
+
+    }
+
+    private PixelColor detectPixelColor() {
+
+        float[] hsvValues = { 0.0f, 0.0f, 0.0f };
+
+        int red = this.pixelPouchComponent.getRed();
+        int green = this.pixelPouchComponent.getGreen();
+        int blue = this.pixelPouchComponent.getBlue();
+
+        Color.RGBToHSV(red * 8, green * 8, blue * 8, hsvValues);
+
+        float hue = hsvValues[0];
+
+        if(hue < 90)
+            return PixelColor.YELLOW;
+        else if (hue > 120 && hue < 135) {
+            return PixelColor.GREEN;
+        } else if(hue > 158 && hue < 166) {
+            return PixelColor.WHITE;
+        } else if(hue > 200 && hue < 220) {
+            return PixelColor.PURPLE;
+        } else {
+            return PixelColor.WHITE;
+        }
+
+    }
+
     private void onClampCallback() {
 
         this.triggerPixelClampedRumble();
 
-        // Get Color of Pixel
-        NormalizedRGBA rgba = this.pixelPouchComponent.getPouchSensorActiveColor();
-        setGamepadStatusColor(rgba.red * 255, rgba.green * 255, rgba.blue * 255);
+        switch (detectPixelColor()) {
+            case WHITE -> setGamepadStatusColor(255, 255, 255);
+            case PURPLE -> setGamepadStatusColor(255, 0, 255);
+            case YELLOW -> setGamepadStatusColor(255, 80, 0);
+            case GREEN -> setGamepadStatusColor(0, 255, 0);
+        }
+
+    }
+
+    private void onReleaseCallback() {
+        this.resetGamepadStatusColors();
     }
 
     private void triggerPixelClampedRumble() {
@@ -277,12 +336,17 @@ public class Teleop extends LinearOpMode {
 
     }
 
-    private static final int COLOR_STATUS_DURATION = 2000;
-
     private void setGamepadStatusColor(double r, double g, double b) {
 
-        this.gamepad1.setLedColor(r, g, b, COLOR_STATUS_DURATION);
-        this.gamepad2.setLedColor(r, g, b, COLOR_STATUS_DURATION);
+        this.gamepad1.setLedColor(r, g, b, Gamepad.LED_DURATION_CONTINUOUS);
+        this.gamepad2.setLedColor(r, g, b, Gamepad.LED_DURATION_CONTINUOUS);
+
+    }
+
+    private void resetGamepadStatusColors() {
+
+        this.gamepad1.setLedColor(0, 0, 255, Gamepad.LED_DURATION_CONTINUOUS);
+        this.gamepad2.setLedColor(255, 0, 0, Gamepad.LED_DURATION_CONTINUOUS);
 
     }
 

@@ -20,7 +20,7 @@ public class LiftMultiComponentSystem {
         SCORING_POSITION
     }
 
-    private enum State {
+    public enum State {
 
         AT_INTAKE_POSITION,
         INTERNAL_LIFT,
@@ -190,4 +190,6 @@ public class LiftMultiComponentSystem {
         return currentPos >= min && currentPos <=  max;
 
     }
+
+    public State getCurrentState() { return this.state; }
 }

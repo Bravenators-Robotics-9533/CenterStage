@@ -4,6 +4,7 @@ import com.bravenatorsrobotics.HardwareMapIdentities;
 import com.bravenatorsrobotics.eventSystem.Callback;
 import com.bravenatorsrobotics.eventSystem.CallbackSystem;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -22,6 +23,7 @@ public class PixelPouchComponent {
     private static final double POUCH_SENSOR_DISTANCE = 26;
 
     private final CallbackSystem onClampCallbackSystem = new CallbackSystem();
+    private final CallbackSystem onReleaseCallbackSystem = new CallbackSystem();
 
     private enum PixelPouchStatus {
 
@@ -39,9 +41,11 @@ public class PixelPouchComponent {
 
     private final Servo clampServo;
     private final Servo pouchServo;
-    private final RevColorSensorV3 pouchColorSensor;
 
-    private final boolean shouldDetect;
+    private final RevColorSensorV3 pouchDistanceSensor;
+    private final ColorSensor pouchColorSensor;
+
+    private boolean shouldDetect;
 
     public PixelPouchComponent(HardwareMap hardwareMap, boolean shouldDetect) {
 
@@ -51,7 +55,8 @@ public class PixelPouchComponent {
         this.pouchServo         = hardwareMap.get(Servo.class, HardwareMapIdentities.POUCH_SERVO);
         this.pouchServo.setDirection(Servo.Direction.REVERSE);
 
-        this.pouchColorSensor   = hardwareMap.get(RevColorSensorV3.class, HardwareMapIdentities.POUCH_SENSOR);
+        this.pouchDistanceSensor = hardwareMap.get(RevColorSensorV3.class, HardwareMapIdentities.POUCH_SENSOR);
+        this.pouchColorSensor = hardwareMap.get(ColorSensor.class, HardwareMapIdentities.POUCH_SENSOR);
 
     }
 
@@ -67,13 +72,21 @@ public class PixelPouchComponent {
         boolean isPixelDetected = isPixelDetected();
 
         switch (pixelPouchStatus) {
-            case OPEN_REQUESTED ->
-                    pixelPouchStatus = isPixelClampOpen() ? PixelPouchStatus.OPEN : PixelPouchStatus.OPEN_AWAITING_PIXEL_REMOVAL;
+            case OPEN_REQUESTED -> {
+                if(isPixelClampOpen()) {
+                    this.pixelPouchStatus = PixelPouchStatus.OPEN;
+                    this.onReleaseCallbackSystem.fireCallback();
+                } else {
+                    this.pixelPouchStatus = PixelPouchStatus.OPEN_AWAITING_PIXEL_REMOVAL;
+                }
+            }
+
             case OPEN_AWAITING_PIXEL_REMOVAL -> {
                 if (!isPixelClampOpen()) {
                     clampServo.setPosition(CLAMP_OPEN_POSITION);
                 } else if (!isPixelDetected) {
                     pixelPouchStatus = PixelPouchStatus.OPEN;
+                    this.onReleaseCallbackSystem.fireCallback();
                 }
             }
             case OPEN -> {
@@ -125,7 +138,7 @@ public class PixelPouchComponent {
     public void requestClose() { this.pixelPouchStatus = PixelPouchStatus.CLOSE_REQUESTED; }
 
     public boolean isPixelDetected() {
-        return this.pouchColorSensor.getDistance(DistanceUnit.MM) <= POUCH_SENSOR_DISTANCE;
+        return this.pouchDistanceSensor.getDistance(DistanceUnit.MM) <= POUCH_SENSOR_DISTANCE;
     }
 
     public boolean isPixelClampOpen() { return this.clampServo.getPosition() == CLAMP_OPEN_POSITION; }
@@ -133,14 +146,22 @@ public class PixelPouchComponent {
     public void addOnClampCallback(Callback callback) { this.onClampCallbackSystem.addCallback(callback); }
     public void removeOnClampCallback(Callback callback) { this.onClampCallbackSystem.removeCallback(callback); }
 
+    public void addOnReleaseCallback(Callback callback) { this.onReleaseCallbackSystem.addCallback(callback); }
+    public void removeOnReleaseCallback(Callback callback) { this.onReleaseCallbackSystem.removeCallback(callback); }
+
     public PixelPouchStatus getPixelPouchStatus() { return this.pixelPouchStatus; }
 
-    public NormalizedRGBA getPouchSensorActiveColor() { return this.pouchColorSensor.getNormalizedColors(); }
+    public int getRed() { return this.pouchColorSensor.red(); }
+    public int getGreen() { return this.pouchColorSensor.green(); }
+    public int getBlue() { return this.pouchColorSensor.blue(); }
 
     public void printTelemetry(Telemetry telemetry) {
 
         telemetry.addData("Pixel Pouch Servo Position", this.pouchServo.getPosition());
 
     }
+
+    public boolean isShouldDetect() { return this.shouldDetect; }
+    public void setShouldDetect(boolean shouldDetect) { this.shouldDetect = shouldDetect; }
 
 }
