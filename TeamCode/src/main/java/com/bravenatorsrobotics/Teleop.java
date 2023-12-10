@@ -131,9 +131,11 @@ public class Teleop extends LinearOpMode {
                 this.didAutoChangeSlowMode = false;
             }
 
+
             driverGamePad.update();
             operatorGamePad.update();
 
+            this.pixelPouchComponent.printTelemetry(telemetry);
             telemetry.update();
 
         }
@@ -273,7 +275,6 @@ public class Teleop extends LinearOpMode {
 
         double suspensionLiftPower = Range.clip(Math.pow(gamepad2.right_trigger - gamepad2.left_trigger, 3), -1.0, 1.0);
         this.suspensionLiftComponent.setManualPower(suspensionLiftPower);
-//        this.liftMultiComponentSystem.liveAdjustLiftHeight((int) (liveAdjust * LIVE_ADJUST_MULTIPLE_CONSTANT * this.deltaTime));
 
     }
 
@@ -317,10 +318,10 @@ public class Teleop extends LinearOpMode {
         this.triggerPixelClampedRumble();
 
         switch (detectPixelColor()) {
-            case WHITE -> setGamepadStatusColor(255, 255, 255);
-            case PURPLE -> setGamepadStatusColor(255, 0, 255);
-            case YELLOW -> setGamepadStatusColor(255, 80, 0);
-            case GREEN -> setGamepadStatusColor(0, 255, 0);
+            case WHITE -> setGamepadStatusColor(1, 1, 0.8);
+            case PURPLE -> setGamepadStatusColor(1, 0, 1);
+            case YELLOW -> setGamepadStatusColor(1, 0.55, 0);
+            case GREEN -> setGamepadStatusColor(0, 1, 0);
         }
 
     }

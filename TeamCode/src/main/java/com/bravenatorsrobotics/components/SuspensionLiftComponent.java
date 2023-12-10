@@ -15,7 +15,7 @@ public class SuspensionLiftComponent {
     private static final double SERVO_VELOCITY = 1.2821; // rev/s.
     private static final double MOTOR_VELOCITY = (1680 * SERVO_VELOCITY) / 2;
 
-    private static final double SUSPENSION_LIFT_POWER = 0.75;
+    private static final double SUSPENSION_LIFT_DOWN_POWER = 1.0;
 
     private static final double SERVO_MOVE_TIME_SECONDS = 2.0;
 
@@ -102,7 +102,7 @@ public class SuspensionLiftComponent {
         isLockingSequence = true;
 
         this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.suspensionLift.setVelocity(-MOTOR_VELOCITY);
+        this.suspensionLift.setPower(-SUSPENSION_LIFT_DOWN_POWER);
         this.suspensionLiftGuideServo.setPosition(-1);
 
     }

@@ -14,13 +14,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class PixelPouchComponent {
 
-    public static final double CLAMP_OPEN_POSITION = 1.0;
+    public static final double CLAMP_OPEN_POSITION = 0.9;
     public static final double CLAMP_CLOSE_POSITION = 0.7;
 
     public static final double POUCH_INTAKE_POSITION = 0;
-    public static final double POUCH_SCORING_POSITION = 0.7;
+    public static final double POUCH_SCORING_POSITION = 0.65;
 
-    private static final double POUCH_SENSOR_DISTANCE = 26;
+    private static final double POUCH_SENSOR_DISTANCE = 36;
 
     private final CallbackSystem onClampCallbackSystem = new CallbackSystem();
     private final CallbackSystem onReleaseCallbackSystem = new CallbackSystem();
@@ -158,6 +158,7 @@ public class PixelPouchComponent {
     public void printTelemetry(Telemetry telemetry) {
 
         telemetry.addData("Pixel Pouch Servo Position", this.pouchServo.getPosition());
+        telemetry.addData("Pixel Pouch Distance", this.pouchDistanceSensor.getDistance(DistanceUnit.MM));
 
     }
 
