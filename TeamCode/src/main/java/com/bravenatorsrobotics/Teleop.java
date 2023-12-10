@@ -24,6 +24,7 @@ public class Teleop extends LinearOpMode {
 
     private static final double MAX_ROBOT_SPEED = 1.0;
     private static final double SLOW_MODE_SPEED = 0.2;
+    private static final double SUSPENSION_SLOW_SPEED = 0.1;
 
     private FtcGamePad driverGamePad;
     private FtcGamePad operatorGamePad;
@@ -43,6 +44,7 @@ public class Teleop extends LinearOpMode {
 
     private boolean isSlowModeActive = false;
     private boolean shouldUseMasterController = false;
+    private boolean shouldOverrideSuspensionSlow = false;
 
     private float deltaTime = 0;
 
@@ -134,6 +136,11 @@ public class Teleop extends LinearOpMode {
             case FtcGamePad.GAMEPAD_RBUMPER -> {
                 if (isPressed)
                     isSlowModeActive = !isSlowModeActive;
+            }
+
+            case FtcGamePad.GAMEPAD_A -> {
+                if(isPressed)
+                    shouldOverrideSuspensionSlow = !shouldOverrideSuspensionSlow;
             }
 
         }
@@ -231,24 +238,19 @@ public class Teleop extends LinearOpMode {
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
 
-        if(isSlowModeActive) {
+        double speedLimit = MAX_ROBOT_SPEED;
 
-            frontLeftPower  = Range.clip(frontLeftPower, -SLOW_MODE_SPEED, SLOW_MODE_SPEED);
-            frontRightPower = Range.clip(frontRightPower, -SLOW_MODE_SPEED, SLOW_MODE_SPEED);
-            backLeftPower   = Range.clip(backLeftPower, -SLOW_MODE_SPEED, SLOW_MODE_SPEED);
-            backRightPower  = Range.clip(backRightPower, -SLOW_MODE_SPEED, SLOW_MODE_SPEED);
+        if(!suspensionLiftComponent.isLimitSensorTriggered() && !shouldOverrideSuspensionSlow)
+            speedLimit = SUSPENSION_SLOW_SPEED;
+        else if(isSlowModeActive)
+            speedLimit = SLOW_MODE_SPEED;
 
-        } else {
-
-            frontLeftPower  = Range.clip(frontLeftPower, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
-            frontRightPower = Range.clip(frontRightPower, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
-            backLeftPower   = Range.clip(backLeftPower, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
-            backRightPower  = Range.clip(backRightPower, -MAX_ROBOT_SPEED, MAX_ROBOT_SPEED);
-
-        }
+        frontLeftPower  = Range.clip(frontLeftPower, -speedLimit, speedLimit);
+        frontRightPower = Range.clip(frontRightPower, -speedLimit, speedLimit);
+        backLeftPower   = Range.clip(backLeftPower, -speedLimit, speedLimit);
+        backRightPower  = Range.clip(backRightPower, -speedLimit, speedLimit);
 
         drive.setMotorPowers(frontLeftPower, backLeftPower, backRightPower, frontRightPower);
-
     }
 
     private void handleLift() {
