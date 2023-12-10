@@ -67,44 +67,33 @@ public class PixelPouchComponent {
         boolean isPixelDetected = isPixelDetected();
 
         switch (pixelPouchStatus) {
-
-            case OPEN_REQUESTED:
-                pixelPouchStatus = isPixelClampOpen() ? PixelPouchStatus.OPEN : PixelPouchStatus.OPEN_AWAITING_PIXEL_REMOVAL;
-                break;
-
-            case OPEN_AWAITING_PIXEL_REMOVAL:
-                if(!isPixelClampOpen()) {
+            case OPEN_REQUESTED ->
+                    pixelPouchStatus = isPixelClampOpen() ? PixelPouchStatus.OPEN : PixelPouchStatus.OPEN_AWAITING_PIXEL_REMOVAL;
+            case OPEN_AWAITING_PIXEL_REMOVAL -> {
+                if (!isPixelClampOpen()) {
                     clampServo.setPosition(CLAMP_OPEN_POSITION);
-                } else if(!isPixelDetected) {
+                } else if (!isPixelDetected) {
                     pixelPouchStatus = PixelPouchStatus.OPEN;
                 }
-
-                break;
-
-            case OPEN:
-                if(isPixelDetected && shouldDetect) {
+            }
+            case OPEN -> {
+                if (isPixelDetected && shouldDetect) {
                     pixelPouchStatus = PixelPouchStatus.CLOSE_REQUESTED;
                     clampServo.setPosition(CLAMP_CLOSE_POSITION);
                 }
-
-                break;
-
-            case CLOSE_REQUESTED:
-                if(clampServo.getPosition() != CLAMP_CLOSE_POSITION)
+            }
+            case CLOSE_REQUESTED -> {
+                if (clampServo.getPosition() != CLAMP_CLOSE_POSITION)
                     clampServo.setPosition(CLAMP_CLOSE_POSITION);
                 else {
                     pixelPouchStatus = PixelPouchStatus.CLOSED;
                     onClampCallbackSystem.fireCallback();
                 }
-
-                break;
-
-            case CLOSED:
-                if(!isPixelDetected && shouldDetect)
+            }
+            case CLOSED -> {
+                if (!isPixelDetected && shouldDetect)
                     this.pixelPouchStatus = PixelPouchStatus.OPEN_REQUESTED;
-
-                break;
-
+            }
         }
 
     }
