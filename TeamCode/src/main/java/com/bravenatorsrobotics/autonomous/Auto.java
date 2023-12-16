@@ -29,6 +29,8 @@ public class Auto extends LinearOpMode {
 
     private TeamPropLocation teamPropLocation = TeamPropLocation.LEFT;
 
+    private Config config;
+
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -36,7 +38,7 @@ public class Auto extends LinearOpMode {
         telemetry.update();
 
         // Config
-        Config config = new Config(hardwareMap.appContext);
+        this.config = new Config(hardwareMap.appContext);
 
         // Setup Drive System
         MecanumDrive drive = new MecanumDrive(this.hardwareMap);
@@ -97,12 +99,23 @@ public class Auto extends LinearOpMode {
         while(!isStarted()) {
 
             // Compute team prop location
-            if(!openCVDetection.getTeamPropPipeline().isDetecting() || openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 300)
-                this.teamPropLocation = TeamPropLocation.LEFT;
-            else if(openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 850)
-                this.teamPropLocation = TeamPropLocation.CENTER;
-            else if(openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] > 850)
-                this.teamPropLocation = TeamPropLocation.RIGHT;
+            if(this.config.GetStartingPosition() == Config.StartingPosition.RED) {
+                if(!openCVDetection.getTeamPropPipeline().isDetecting() || openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 300)
+                    this.teamPropLocation = TeamPropLocation.LEFT;
+                else if(openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 850)
+                    this.teamPropLocation = TeamPropLocation.CENTER;
+                else if(openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] > 850)
+                    this.teamPropLocation = TeamPropLocation.RIGHT;
+            } else {
+                if(!openCVDetection.getTeamPropPipeline().isDetecting() || openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 400)
+                    this.teamPropLocation = TeamPropLocation.LEFT;
+                else if(openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 850)
+                    this.teamPropLocation = TeamPropLocation.CENTER;
+                else if(openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] > 850)
+                    this.teamPropLocation = TeamPropLocation.RIGHT;
+            }
+
+
 
             // Print telemetry data of team prop location
             telemetry.addData("Location", this.teamPropLocation.name());

@@ -43,7 +43,7 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             .build();
 
         this.leftLineUpBoard = drive.trajectorySequenceBuilder(this.leftFirstSequence.end())
-                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE))
+                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
                 .waitSeconds(WAIT_TIME_FOR_LIFT)
                 .lineToLinearHeading(new Pose2d(53.5, -23.5, Math.toRadians(180)))
                 .waitSeconds(0.5)
@@ -63,7 +63,7 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             .build();
 
         this.centerLineUpBoard = drive.trajectorySequenceBuilder(this.centerFirstSequence.end())
-                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE))
+                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
                 .waitSeconds(WAIT_TIME_FOR_LIFT)
                 .lineToLinearHeading(new Pose2d(49, -32, Math.toRadians(180)))
                 .waitSeconds(0.5)
@@ -84,7 +84,7 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             .build();
 
         this.rightLineUpBoard = drive.trajectorySequenceBuilder(this.rightFirstSequence.end())
-                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_MIDDLE_RELEASE))
+                .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
                 .waitSeconds(WAIT_TIME_FOR_LIFT)
                 .lineToLinearHeading(new Pose2d(50, -33, Math.toRadians(180)))
                 .waitSeconds(0.5)

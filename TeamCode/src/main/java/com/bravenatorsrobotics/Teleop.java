@@ -135,7 +135,8 @@ public class Teleop extends LinearOpMode {
             driverGamePad.update();
             operatorGamePad.update();
 
-            this.pixelPouchComponent.printTelemetry(telemetry);
+//            this.pixelPouchComponent.printTelemetry(telemetry);
+            telemetry.addData("Safe To Drive W/ Suspension", !shouldOverrideSuspensionSlow);
             telemetry.update();
 
         }
@@ -156,7 +157,7 @@ public class Teleop extends LinearOpMode {
                     isSlowModeActive = !isSlowModeActive;
             }
 
-            case FtcGamePad.GAMEPAD_A -> {
+            case FtcGamePad.GAMEPAD_X -> {
                 if(isPressed)
                     shouldOverrideSuspensionSlow = !shouldOverrideSuspensionSlow;
             }

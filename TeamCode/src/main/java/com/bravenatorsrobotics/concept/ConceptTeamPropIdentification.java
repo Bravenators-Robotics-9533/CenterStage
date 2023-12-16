@@ -9,8 +9,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous(name="Concept Team Prop Identification", group="Concept")
 @Config
-@Disabled
-
 public class ConceptTeamPropIdentification extends LinearOpMode {
 
     private enum Position {
@@ -19,7 +17,7 @@ public class ConceptTeamPropIdentification extends LinearOpMode {
 
     private Position position = Position.LEFT;
 
-    public static TeamPropPipeline.DetectionColorPipeline colorPipeline = TeamPropPipeline.DetectionColorPipeline.PIPELINE_RED;
+    public static TeamPropPipeline.DetectionColorPipeline colorPipeline = TeamPropPipeline.DetectionColorPipeline.PIPELINE_BLUE;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -38,12 +36,21 @@ public class ConceptTeamPropIdentification extends LinearOpMode {
                 telemetry.addData("Position", openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] + ", " + openCVDetection.getTeamPropPipeline().getDetectedPosition().val[1]);
             }
 
-            if(!openCVDetection.getTeamPropPipeline().isDetecting() || openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 300)
-                position = Position.LEFT;
-            else if(openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 850) // Cent
-                position = Position.CENTER;
-            else if(openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] > 850) // Right
-                position = Position.RIGHT;
+            if(colorPipeline == TeamPropPipeline.DetectionColorPipeline.PIPELINE_RED) {
+                if (!openCVDetection.getTeamPropPipeline().isDetecting() || openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 300)
+                    position = Position.LEFT;
+                else if (openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 850) // Cent
+                    position = Position.CENTER;
+                else if (openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] > 850) // Right
+                    position = Position.RIGHT;
+            } else {
+                if (!openCVDetection.getTeamPropPipeline().isDetecting() || openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 400)
+                    position = Position.LEFT;
+                else if (openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] <= 850) // Cent
+                    position = Position.CENTER;
+                else if (openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] > 850) // Right
+                    position = Position.RIGHT;
+            }
 
             telemetry.addData("Position", position.name());
 

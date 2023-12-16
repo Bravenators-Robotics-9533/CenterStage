@@ -37,13 +37,13 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
                 .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
                 .waitSeconds(WAIT_SECONDS)
                 .splineToLinearHeading(new Pose2d(23 + 17, 54 - 18, Math.toRadians(180)), Math.toRadians(180))
-                .lineTo(new Vector2d(23 + 30, 54 - 16))
+                .lineTo(new Vector2d(23 + 30, 54 - 19))
                 .waitSeconds(0.5)
                 .addTemporalMarker(() -> auto.pixelPouchComponent.requestRelease())
                 .waitSeconds(0.5)
                 .forward(10)
                 .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToIntakePosition())
-                .strafeRight(23)
+                .strafeRight(20)
                 .back(20)
 
             .build();
@@ -56,13 +56,13 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
                 .strafeLeft(7)
                 .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
                 .waitSeconds(WAIT_SECONDS)
-                .splineToLinearHeading(new Pose2d(47, 70 - 8 - 32 -11, Math.toRadians(180)), Math.toRadians(0))
-                .lineTo(new Vector2d(50.5, 70 - 8 - 32 - 11))
+                .splineToLinearHeading(new Pose2d(47, 70 - 8 - 32 -6, Math.toRadians(180)), Math.toRadians(0))
+                .lineTo(new Vector2d(50.5, 70 - 8 - 32 - 6))
                 .addTemporalMarker(() -> auto.pixelPouchComponent.requestRelease())
                 .waitSeconds(0.25)
                 .forward(10)
                 .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToIntakePosition())
-                .strafeRight(37)
+                .strafeRight(38.5)
                 .back(26)
             .build();
 
@@ -81,7 +81,7 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
                 .lineTo(new Vector2d(35 + 10, 25))
                 .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToIntakePosition())
                 .lineTo(new Vector2d(35, 25))
-                .strafeRight(32)
+                .strafeRight(34)
                 .back(26)
             .build();
 
