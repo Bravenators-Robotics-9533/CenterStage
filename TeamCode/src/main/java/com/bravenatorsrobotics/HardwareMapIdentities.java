@@ -19,6 +19,7 @@ public class HardwareMapIdentities {
 
     public static final String AIRPLANE_LAUNCHER_SERVO = "airplane";
 
-    public static final String WEBCAM = "Webcam 1";
+    public static final String POUCH_WEBCAM = "Pouch Cam";
+    public static final String LIFT_WEBCAM = "Lift Cam";
 
 }

@@ -182,6 +182,29 @@ public class MecanumDrive extends com.acmerobotics.roadrunner.drive.MecanumDrive
         trajectorySequenceRunner.followTrajectorySequenceAsync(trajectorySequence);
     }
 
+    public void drive(double v, double h, double r) {
+        double theta = Math.atan2(v, h);
+        double power = Math.hypot(h, v);
+
+        double sin = Math.sin(theta - Math.PI / 4);
+        double cos = Math.cos(theta - Math.PI / 4);
+        double max = Math.max(Math.abs(sin), Math.abs(cos));
+
+        double leftFront  = power * cos/max - r;
+        double rightFront = power * sin/max + r;
+        double leftRear   = power * sin/max - r;
+        double rightRear  = power * cos/max + r;
+
+        if((power + Math.abs(r)) > 1) {
+            leftFront /= power - r;
+            rightFront /= power - r;
+            leftRear /= power - r;
+            rightRear /= power - r;
+        }
+
+        setMotorPowers(leftFront, leftRear, rightRear, rightFront);
+    }
+
     public void followTrajectorySequence(TrajectorySequence trajectorySequence) {
         followTrajectorySequenceAsync(trajectorySequence);
         waitForIdle();

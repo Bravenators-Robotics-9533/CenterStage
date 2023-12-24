@@ -18,7 +18,7 @@ public class OpenCVDetection {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
 
-        WebcamName webcamName = hardwareMap.get(WebcamName.class, HardwareMapIdentities.WEBCAM);
+        WebcamName webcamName = hardwareMap.get(WebcamName.class, HardwareMapIdentities.POUCH_WEBCAM);
 
         this.camera = OpenCvCameraFactory.getInstance().createWebcam(webcamName, cameraMonitorViewId);
         this.pipeline = new TeamPropPipeline();
