@@ -3,7 +3,6 @@ package com.bravenatorsrobotics.autonomous.routes;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.bravenatorsrobotics.autonomous.Auto;
 import com.bravenatorsrobotics.autonomous.TeamPropLocation;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import roadrunner.drive.MecanumDrive;
@@ -12,6 +11,9 @@ import roadrunner.trajectorysequence.TrajectorySequence;
 public abstract class AutonomousRoute {
 
     protected final MecanumDrive drive;
+
+    public static final double WIDTH = 16.6;
+    public static final double HEIGHT = 17.0;
 
     protected final Auto auto;
     private final ElapsedTime timer = new ElapsedTime();
@@ -40,22 +42,25 @@ public abstract class AutonomousRoute {
         this.drive.setPoseEstimate(startPosition);
         this.drive.followTrajectorySequenceAsync(trajectorySequence);
 
-        this.idleWhileDriveIsBusy();
+        this.idle();
 
         return this.drive.getPoseEstimate();
 
     }
 
-    private void idleWhileDriveIsBusy() {
+    private void idle() {
 
-        while(opModeIsActive() && drive.isBusy()) {
+        while(opModeIsActive() && (drive.isBusy() || auto.liftMultiComponentSystem.isBusy())) {
 
             auto.pixelPouchComponent.update();
             auto.swingArmComponent.update();
 
             auto.liftMultiComponentSystem.update();
+            auto.liftMultiComponentSystem.telemetry(this.auto.telemetry);
 
             drive.update();
+
+            this.auto.telemetry.update();
 
         }
 

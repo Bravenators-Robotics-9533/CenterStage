@@ -20,14 +20,7 @@ public class MeepMeepTesting {
                 .setDimensions(WIDTH, HEIGHT)
                 .followTrajectorySequence(drive ->
                    drive.trajectorySequenceBuilder(new Pose2d(12, -70 + WIDTH / 2.0, Math.toRadians(180)))
-                           .lineTo(new Vector2d(24, -34))
-                           .splineToConstantHeading(new Vector2d(12, -48), Math.toRadians(180))
-//                           .lineToLinearHeading(new Pose2d(50, -36, Math.toRadians(180)))
-
-//                           .lineToSplineHeading(new Pose2d(15, -26, Math.toRadians(90)))
-//                           .waitSeconds(0.25)
-//                           .lineToConstantHeading(new Vector2d(12, -26))
-//                           .lineTo(new Vector2d(12, -36))
+                           .lineTo(new Vector2d(38, -36))
                            .build()
                 );
 

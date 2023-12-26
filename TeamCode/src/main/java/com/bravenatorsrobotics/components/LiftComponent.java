@@ -12,11 +12,12 @@ public class LiftComponent {
     public static final double LIFT_SPEED = 1.0;
 
     public static final int LIFT_POSITION_INTAKE = 0;
-    public static final int LIFT_POSITION_ARM_SAFE = 1150;
+    public static final int LIFT_POSITION_ARM_SAFE = 1050;
+    public static final int TOLERANCE_FOR_LIFT_POSITION_ARM_SAFE = 10;
 
-    public static final int LIFT_POSITION_STAGE_LOWER_RELEASE = 800;
-    public static final int LIFT_POSITION_STAGE_MIDDLE_RELEASE = 1000;
-    public static final int LIFT_POSITION_STAGE_UPPER_RELEASE = 1200;
+    public static final int LIFT_POSITION_STAGE_LOWER_RELEASE = 635;
+    public static final int LIFT_POSITION_STAGE_MIDDLE_RELEASE = 815;
+    public static final int LIFT_POSITION_STAGE_UPPER_RELEASE = 1000;
 
     private final DcMotorEx liftMotor;
 
@@ -47,8 +48,10 @@ public class LiftComponent {
 
     }
 
+    public int getMotorTargetPosition() { return this.liftMotor.getTargetPosition(); }
+
     public int getCurrentPosition() { return this.liftMotor.getCurrentPosition(); }
 
-    public boolean isBusy() { return this.liftMotor.isBusy(); }
+    public boolean isMotorBusy() { return this.liftMotor.isBusy(); }
 
 }

@@ -50,12 +50,12 @@ public class Auto extends LinearOpMode {
         route.initialize();
 
         // Setup OpenCV Team Prop Identification
-        OpenCVDetection openCVDetection = new OpenCVDetection(this.hardwareMap);
-        openCVDetection.getTeamPropPipeline().setDetectionColorPipeline(
-                config.GetStartingPosition() == Config.StartingPosition.RED ?
-                TeamPropPipeline.DetectionColorPipeline.PIPELINE_RED :
-                TeamPropPipeline.DetectionColorPipeline.PIPELINE_BLUE);
-        openCVDetection.startStreaming();
+//        OpenCVDetection openCVDetection = new OpenCVDetection(this.hardwareMap);
+//        openCVDetection.getTeamPropPipeline().setDetectionColorPipeline(
+//                config.GetStartingPosition() == Config.StartingPosition.RED ?
+//                TeamPropPipeline.DetectionColorPipeline.PIPELINE_RED :
+//                TeamPropPipeline.DetectionColorPipeline.PIPELINE_BLUE);
+//        openCVDetection.startStreaming();
 
         // Pixel Funnel
         this.pixelFunnelComponent = new PixelFunnelComponent(this.hardwareMap);
@@ -80,10 +80,10 @@ public class Auto extends LinearOpMode {
         telemetry.update();
 
         // Detect Team Prop
-        syncDetectTeamProp(openCVDetection); // LOCKS THREAD!!!
+//        syncDetectTeamProp(openCVDetection); // LOCKS THREAD!!!
 
         // Stop Streaming
-        openCVDetection.stopStreaming();
+//        openCVDetection.stopStreaming();
 
         waitForStart(); // For Safety wait again for start // LOCKS THREAD!!!
 
@@ -114,8 +114,6 @@ public class Auto extends LinearOpMode {
                 else if(openCVDetection.getTeamPropPipeline().getDetectedPosition().val[0] > 850)
                     this.teamPropLocation = TeamPropLocation.RIGHT;
             }
-
-
 
             // Print telemetry data of team prop location
             telemetry.addData("Location", this.teamPropLocation.name());
