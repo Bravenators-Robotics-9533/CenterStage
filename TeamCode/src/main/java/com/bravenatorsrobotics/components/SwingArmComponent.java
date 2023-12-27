@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 public class SwingArmComponent {
 
     public static final double SWING_ARM_MOTOR_SPEED_OUT = 0.5;
-    public static final double SWING_ARM_MOTOR_SPEED_IN = 0.25;
+    public static final double SWING_ARM_MOTOR_SPEED_IN = 0.2;
 
     public static final int SWING_ARM_INTAKE_POSITION = 0;
     public static final int SWING_ARM_SCORING_POSITION = 750;

@@ -90,13 +90,14 @@ public class Auto extends LinearOpMode {
         // Set to intake position
         this.swingArmComponent.goToIntakePosition();
 
-        route.run(this.teamPropLocation);
+//        route.run(this.teamPropLocation);
+        route.run(TeamPropLocation.LEFT);
 
     }
 
     private void syncDetectTeamProp(OpenCVDetection openCVDetection) {
 
-        while(!isStarted()) {
+        while(opModeIsActive() && !isStarted()) {
 
             // Compute team prop location
             if(this.config.GetStartingPosition() == Config.StartingPosition.RED) {

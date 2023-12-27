@@ -1,6 +1,7 @@
 package com.bravenatorsrobotics.autonomous.sequence;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.bravenatorsrobotics.HardwareMapIdentities;
 import com.bravenatorsrobotics.vision.AprilTagDetector;
@@ -37,7 +38,7 @@ public class AlignVerticalToBackdropSequence extends AutonomousSequence {
 
     }
 
-    public Pose2d runSequenceSync(Pose2d startPos) {
+    public Pose2d runSequenceSync(Pose2d startPos, double yInches) {
 
         double distance = 0.0;
         ElapsedTime searchingTimeout = new ElapsedTime();
@@ -60,7 +61,7 @@ public class AlignVerticalToBackdropSequence extends AutonomousSequence {
 
 
         TrajectorySequence trajectory = drive.trajectorySequenceBuilder(startPos)
-                .back(distance - desiredDistanceInches)
+                .lineToConstantHeading(new Vector2d(startPos.getX() + (distance - desiredDistanceInches), startPos.getY() + yInches))
                 .build();
 
         drive.followTrajectorySequenceAsync(trajectory);
