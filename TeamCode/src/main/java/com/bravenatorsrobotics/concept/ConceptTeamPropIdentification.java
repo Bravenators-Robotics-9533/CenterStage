@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+@Disabled
 @Autonomous(name="Concept Team Prop Identification", group="Concept")
 @Config
 public class ConceptTeamPropIdentification extends LinearOpMode {
@@ -17,7 +18,7 @@ public class ConceptTeamPropIdentification extends LinearOpMode {
 
     private Position position = Position.LEFT;
 
-    public static TeamPropPipeline.DetectionColorPipeline colorPipeline = TeamPropPipeline.DetectionColorPipeline.PIPELINE_BLUE;
+    public static TeamPropPipeline.DetectionColorPipeline colorPipeline = TeamPropPipeline.DetectionColorPipeline.PIPELINE_RED;
 
     @Override
     public void runOpMode() throws InterruptedException {

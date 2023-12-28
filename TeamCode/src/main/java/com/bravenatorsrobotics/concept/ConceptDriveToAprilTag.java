@@ -9,10 +9,12 @@ import com.acmerobotics.roadrunner.control.PIDFController;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.bravenatorsrobotics.HardwareMapIdentities;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
+import org.checkerframework.checker.interning.qual.InternedDistinct;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
@@ -29,6 +31,7 @@ import java.util.concurrent.TimeUnit;
 
 import roadrunner.drive.MecanumDrive;
 
+@Disabled
 @TeleOp(name = "Concept Drive to April Tag", group = "concept")
 @Config
 public class ConceptDriveToAprilTag extends LinearOpMode {
