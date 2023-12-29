@@ -37,6 +37,8 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
 
     }
 
+    private static final double EXPECTED_DISTANCE = 22.37;
+
     private void scorePixel(TeamPropLocation teamPropLocation) {
         // Get starting position
         Pose2d pos = super.runTrajectorySequence(START_POSITION, this.moveOffWall);
@@ -47,20 +49,23 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             case CENTER -> 0;
         };
 
-        // Drive to the backdrop and release the pixel
-        pos = this.alignVerticalToBackdropSequence.runSequenceSync(pos, offset);
+        super.auto.pixelPouchComponent.requestRelease(); // Release Pixel
 
-        super.auto.pixelPouchComponent.requestRelease();
+        AlignVerticalToBackdropSequence.AlignResult result = this.alignVerticalToBackdropSequence.runSequenceSync(pos, offset);
+
+        double distAdjust = EXPECTED_DISTANCE - result.distance;
+
+        Pose2d adjustedPosition = new Pose2d(result.endPos.getX() + distAdjust, result.endPos.getY(), result.endPos.getHeading());
 
         // TODO: CALCULATE THIS SEQUENCE ON ANOTHER THREAD DURING PREVIOUS RUN SEQUENCE
         // Calculate move to OFF_BACKDROP_POS with lift retraction at displacement of 1
-        TrajectorySequence moveOffBackdrop = drive.trajectorySequenceBuilder(pos)
+        TrajectorySequence moveOffBackdrop = drive.trajectorySequenceBuilder(adjustedPosition)
                 .addDisplacementMarker(1, () -> super.auto.liftMultiComponentSystem.goToIntakePosition())
                 .lineTo(OFF_BACKDROP_POS.vec())
                 .build();
 
         // Run the previously calculated sequence
-        super.runTrajectorySequence(pos, moveOffBackdrop);
+        super.runTrajectorySequence(adjustedPosition, moveOffBackdrop);
     }
 
     private void placePurplePixel(TeamPropLocation teamPropLocation) {

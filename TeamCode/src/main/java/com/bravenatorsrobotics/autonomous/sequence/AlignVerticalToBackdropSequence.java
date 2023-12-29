@@ -38,7 +38,19 @@ public class AlignVerticalToBackdropSequence extends AutonomousSequence {
 
     }
 
-    public Pose2d runSequenceSync(Pose2d startPos, double yInches) {
+    public final class AlignResult {
+
+        public final Pose2d endPos;
+        public final double distance;
+
+        public AlignResult(Pose2d endPos, double distance) {
+            this.endPos = endPos;
+            this.distance = distance;
+        }
+
+    }
+
+    public AlignResult runSequenceSync(Pose2d startPos, double yInches) {
 
         double distance = 0.0;
         ElapsedTime searchingTimeout = new ElapsedTime();
@@ -70,7 +82,7 @@ public class AlignVerticalToBackdropSequence extends AutonomousSequence {
             drive.update();
         }
 
-        return trajectory.end();
+        return new AlignResult(trajectory.end(), distance);
     }
 
 }
