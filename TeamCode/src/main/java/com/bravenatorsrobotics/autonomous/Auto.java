@@ -50,12 +50,12 @@ public class Auto extends LinearOpMode {
         route.initialize();
 
         // Setup OpenCV Team Prop Identification
-//        OpenCVDetection openCVDetection = new OpenCVDetection(this.hardwareMap);
-//        openCVDetection.getTeamPropPipeline().setDetectionColorPipeline(
-//                config.GetStartingPosition() == Config.StartingPosition.RED ?
-//                TeamPropPipeline.DetectionColorPipeline.PIPELINE_RED :
-//                TeamPropPipeline.DetectionColorPipeline.PIPELINE_BLUE);
-//        openCVDetection.startStreaming();
+        OpenCVDetection openCVDetection = new OpenCVDetection(this.hardwareMap);
+        openCVDetection.getTeamPropPipeline().setDetectionColorPipeline(
+                config.GetStartingPosition() == Config.StartingPosition.RED ?
+                TeamPropPipeline.DetectionColorPipeline.PIPELINE_RED :
+                TeamPropPipeline.DetectionColorPipeline.PIPELINE_BLUE);
+        openCVDetection.startStreaming();
 
         // Pixel Funnel
         this.pixelFunnelComponent = new PixelFunnelComponent(this.hardwareMap);
@@ -80,24 +80,23 @@ public class Auto extends LinearOpMode {
         telemetry.update();
 
         // Detect Team Prop
-//        syncDetectTeamProp(openCVDetection); // LOCKS THREAD!!!
+        syncDetectTeamProp(openCVDetection); // LOCKS THREAD!!!
 
         // Stop Streaming
-//        openCVDetection.stopStreaming();
+        openCVDetection.stopStreaming();
 
         waitForStart(); // For Safety wait again for start // LOCKS THREAD!!!
 
         // Set to intake position
         this.swingArmComponent.goToIntakePosition();
 
-//        route.run(this.teamPropLocation);
-        route.run(TeamPropLocation.LEFT);
+        route.run(this.teamPropLocation);
 
     }
 
     private void syncDetectTeamProp(OpenCVDetection openCVDetection) {
 
-        while(opModeIsActive() && !isStarted()) {
+        while(!isStarted()) {
 
             // Compute team prop location
             if(this.config.GetStartingPosition() == Config.StartingPosition.RED) {
@@ -119,6 +118,8 @@ public class Auto extends LinearOpMode {
             // Print telemetry data of team prop location
             telemetry.addData("Location", this.teamPropLocation.name());
             telemetry.update();
+
+            super.sleep(10);
         }
 
     }
