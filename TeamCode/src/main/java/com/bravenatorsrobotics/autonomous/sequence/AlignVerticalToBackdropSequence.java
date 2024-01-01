@@ -85,4 +85,6 @@ public class AlignVerticalToBackdropSequence extends AutonomousSequence {
         return new AlignResult(trajectory.end(), distance);
     }
 
+    public double getDesiredDistanceInches() { return this.desiredDistanceInches; }
+
 }

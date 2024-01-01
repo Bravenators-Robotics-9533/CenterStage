@@ -9,6 +9,9 @@ import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
 
 public class MeepMeepTesting {
 
+    private static final Pose2d START_POSITION = new Pose2d(12, 65, Math.toRadians(0));
+
+
     private static final double WIDTH = 16.6;
     private static final double HEIGHT = 17.0;
 
@@ -19,11 +22,8 @@ public class MeepMeepTesting {
                 .setConstraints(31.449374934056326, 31.449374934056326, 1.677, Math.toRadians(60), 15.0)
                 .setDimensions(WIDTH, HEIGHT)
                 .followTrajectorySequence(drive ->
-                   drive.trajectorySequenceBuilder(new Pose2d(24, -14, Math.toRadians(180)))
-                           .splineToConstantHeading(new Vector2d(27, -10), Math.PI * 3 / 2)
-                           .lineToLinearHeading(new Pose2d(50, -10, Math.toRadians(180)))
-//                           .splineTo(new Vector2d(31.98, -20.86), Math.toRadians(225.00))
-//                           .splineToConstantHeading(new Vector2d(27, -10), Math.toRadians(37))
+                   drive.trajectorySequenceBuilder(START_POSITION)
+                           .lineToLinearHeading(new Pose2d(36, 35, Math.toRadians(180)))
 
                            .build()
                 );

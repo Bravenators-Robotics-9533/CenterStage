@@ -15,7 +15,7 @@ public class LiftComponent {
     public static final int LIFT_POSITION_ARM_SAFE = 1080;
     public static final int TOLERANCE_FOR_LIFT_POSITION_ARM_SAFE = 10;
 
-    public static final int LIFT_POSITION_STAGE_LOWER_RELEASE = 685;
+    public static final int LIFT_POSITION_STAGE_LOWER_RELEASE = 650;
     public static final int LIFT_POSITION_STAGE_MIDDLE_RELEASE = 815;
     public static final int LIFT_POSITION_STAGE_UPPER_RELEASE = 1000;
 

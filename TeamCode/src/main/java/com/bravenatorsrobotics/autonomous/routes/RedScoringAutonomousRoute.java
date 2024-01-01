@@ -49,9 +49,10 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             case CENTER -> 0;
         };
 
-        super.auto.pixelPouchComponent.requestRelease(); // Release Pixel
-
         AlignVerticalToBackdropSequence.AlignResult result = this.alignVerticalToBackdropSequence.runSequenceSync(pos, offset);
+
+        super.auto.pixelPouchComponent.requestRelease(); // Release Pixel
+        super.auto.pixelPouchComponent.update();
 
         double distAdjust = EXPECTED_DISTANCE - result.distance;
 
