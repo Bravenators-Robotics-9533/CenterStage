@@ -60,10 +60,42 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
 
     }
 
+    private void scorePurplePixel(TeamPropLocation teamPropLocation) {
+
+        TrajectorySequence sequence = switch (teamPropLocation) {
+            case LEFT -> drive.trajectorySequenceBuilder(HOME_POSITION)
+                    .lineToLinearHeading(new Pose2d(HOME_POSITION.getX() - 12, HOME_POSITION.getY() + 19, Math.toRadians(0)))
+                    .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
+                    .waitSeconds(0.1)
+                    .lineToConstantHeading(new Vector2d(HOME_POSITION.getX() - 12, HOME_POSITION.getY() + 37))
+                    .lineToLinearHeading(new Pose2d(62, HOME_POSITION.getY() + 37, Math.toRadians(0)))
+                    .build();
+            case CENTER -> drive.trajectorySequenceBuilder(HOME_POSITION)
+                    .lineToLinearHeading(new Pose2d(HOME_POSITION.getX() - 15, HOME_POSITION.getY() - 3, Math.toRadians(-90)))
+                    .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
+                    .waitSeconds(0.1)
+                    .lineToConstantHeading(new Vector2d(HOME_POSITION.getX() - 5, HOME_POSITION.getY() - 4))
+                    .splineToLinearHeading(new Pose2d(66, HOME_POSITION.getY() + 38.5, Math.toRadians(0)), Math.toRadians(0))
+                    .build();
+
+            case RIGHT -> drive.trajectorySequenceBuilder(HOME_POSITION)
+                    .lineToLinearHeading(new Pose2d(HOME_POSITION.getX() - 35, HOME_POSITION.getY() + 16, Math.toRadians(-90)))
+                    .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
+                    .waitSeconds(0.1)
+                    .lineToConstantHeading(new Vector2d(HOME_POSITION.getX() - 25, HOME_POSITION.getY() + 16))
+                    .splineToLinearHeading(new Pose2d(66, HOME_POSITION.getY() + 42, Math.toRadians(0)), Math.toRadians(0))
+                    .build();
+        };
+
+        super.runTrajectorySequence(HOME_POSITION, sequence);
+
+    }
+
     @Override
     public void run(TeamPropLocation teamPropLocation) {
 
         this.initialScoreOnBackdrop(teamPropLocation);
+        this.scorePurplePixel(teamPropLocation);
 
     }
 
