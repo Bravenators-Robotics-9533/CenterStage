@@ -10,7 +10,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class SwingArmComponent {
 
-    public static final double SWING_ARM_MOTOR_SPEED_OUT = 0.5;
+    public static final int SWING_ARM_FLIP_POSITION = 375;
+
+    public static final double SWING_ARM_MOTOR_SPEED_FLIP = 0.2;
+    public static final double SWING_ARM_MOTOR_SPEED_OUT = 0.85;
     public static final double SWING_ARM_MOTOR_SPEED_IN = 0.2;
 
     public static final int SWING_ARM_INTAKE_POSITION = 0;
@@ -23,6 +26,7 @@ public class SwingArmComponent {
     private enum State {
 
         INTAKE,
+        FLIP_POSITION,
         SCORING
 
     }
@@ -44,21 +48,21 @@ public class SwingArmComponent {
     public void update() {
 
         switch (this.currentState) {
-
-            case INTAKE:
+            case INTAKE -> {
                 this.swingArmMotor.setTargetPosition(SWING_ARM_INTAKE_POSITION);
                 this.swingArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 this.swingArmMotor.setPower(SWING_ARM_MOTOR_SPEED_IN);
-
-                break;
-
-            case SCORING:
+            }
+            case SCORING -> {
                 this.swingArmMotor.setTargetPosition(SWING_ARM_SCORING_POSITION);
                 this.swingArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                 this.swingArmMotor.setPower(SWING_ARM_MOTOR_SPEED_OUT);
-
-                break;
-
+            }
+            case FLIP_POSITION -> {
+                this.swingArmMotor.setTargetPosition(SWING_ARM_FLIP_POSITION);
+                this.swingArmMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                this.swingArmMotor.setPower(SWING_ARM_MOTOR_SPEED_FLIP);
+            }
         }
 
     }
@@ -71,6 +75,12 @@ public class SwingArmComponent {
     public void goToScoringPosition() {
 
         this.currentState = State.SCORING;
+
+    }
+
+    public void goToFlipPosition() {
+
+        this.currentState = State.FLIP_POSITION;
 
     }
 

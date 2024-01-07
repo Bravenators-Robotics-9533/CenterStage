@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LiftMultiComponentSystem {
 
+    public static final int RETURN_CRITICAL_POINT = 120;
     private static final int LIFT_ENCODER_TICK_TOLERANCE = 5;
 
     private final LiftComponent liftComponent;
@@ -22,9 +23,6 @@ public class LiftMultiComponentSystem {
     public enum State {
 
         AT_INTAKE_POSITION,
-        INTERNAL_LIFT,
-        SWING_ARM,
-        EXTERNAL_LIFT,
         AT_SCORING_POSITION
 
     }
@@ -67,36 +65,38 @@ public class LiftMultiComponentSystem {
     private void scoringPositionFlow() {
 
         switch (this.state) {
-            case AT_INTAKE_POSITION -> this.state = State.INTERNAL_LIFT;
-            case INTERNAL_LIFT -> {
-                if(this.liftComponent.getMotorTargetPosition() != LiftComponent.LIFT_POSITION_ARM_SAFE) {
-                    this.liftComponent.goToEncoderPositionAsync(LiftComponent.LIFT_POSITION_ARM_SAFE, LiftComponent.LIFT_SPEED);
-                } else if(this.liftComponent.getCurrentPosition() >= LiftComponent.LIFT_POSITION_ARM_SAFE - LiftComponent.TOLERANCE_FOR_LIFT_POSITION_ARM_SAFE) {
-                    this.state = State.SWING_ARM;
-                }
-            }
-            case SWING_ARM -> {
+
+            case AT_INTAKE_POSITION -> {
 
                 if(this.swingArmComponent.getTargetPosition() != SwingArmComponent.SWING_ARM_SCORING_POSITION) {
+
                     this.swingArmComponent.goToScoringPosition();
-                    this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_SCORING_POSITION);
-                } else if(this.isMotorAtPositionWithTolerance(this.swingArmComponent.getSwingArmMotorPosition(), SwingArmComponent.SWING_ARM_SCORING_POSITION)) {
-                    this.state = State.EXTERNAL_LIFT;
-                }
-
-            }
-            case EXTERNAL_LIFT -> {
-
-                if(this.liftComponent.getMotorTargetPosition() != targetExternalLiftPosition) {
+                    this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_FLIP_POSITION);
                     this.liftComponent.goToEncoderPositionAsync(targetExternalLiftPosition, LiftComponent.LIFT_SPEED);
-                    this.state = State.AT_SCORING_POSITION;
+
+                } else {
+                    if(!this.swingArmComponent.isMotorBusy()) {
+
+                        this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_SCORING_POSITION);
+                        this.state = State.AT_SCORING_POSITION;
+
+                    } else if(this.swingArmComponent.getSwingArmMotorPosition() >= SwingArmComponent.SWING_ARM_FLIP_POSITION) {
+                        this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_SCORING_POSITION);
+                    }
                 }
+
             }
+
             case AT_SCORING_POSITION -> {
-                if(this.liftComponent.getCurrentPosition() != this.liveExternalLiftPosition && this.liftComponent.getMotorTargetPosition() != this.liveExternalLiftPosition) {
-                    this.liftComponent.goToEncoderPositionAsync(this.liveExternalLiftPosition, LiftComponent.LIFT_SPEED);
+
+                if(this.swingArmComponent.getTargetPosition() != SwingArmComponent.SWING_ARM_SCORING_POSITION) {
+                    this.state = State.AT_INTAKE_POSITION;
                 }
+
+                if(this.liftComponent.getMotorTargetPosition() != targetExternalLiftPosition)
+                    this.liftComponent.goToEncoderPositionAsync(targetExternalLiftPosition, LiftComponent.LIFT_SPEED);
             }
+
         }
 
     }
@@ -105,38 +105,32 @@ public class LiftMultiComponentSystem {
 
         switch (this.state) {
 
-            case AT_SCORING_POSITION -> this.state = State.EXTERNAL_LIFT;
-
-            case EXTERNAL_LIFT -> {
-
-                if(this.liftComponent.getMotorTargetPosition() != LiftComponent.LIFT_POSITION_ARM_SAFE) {
-                    this.liftComponent.goToEncoderPositionAsync(LiftComponent.LIFT_POSITION_ARM_SAFE, LiftComponent.LIFT_SPEED);
-                } else if(this.liftComponent.getCurrentPosition() >= LiftComponent.LIFT_POSITION_ARM_SAFE - LiftComponent.TOLERANCE_FOR_LIFT_POSITION_ARM_SAFE) {
-                    this.state = State.SWING_ARM;
-                }
-            }
-
-            case SWING_ARM -> {
+            case AT_SCORING_POSITION -> {
 
                 if(this.swingArmComponent.getTargetPosition() != SwingArmComponent.SWING_ARM_INTAKE_POSITION) {
+                    this.swingArmComponent.goToIntakePosition();
+                    this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_FLIP_POSITION);
+                    this.liftComponent.goToEncoderPositionAsync(LiftComponent.LIFT_POSITION_INTAKE, LiftComponent.LIFT_SPEED);
+                } else {
+
+                    if(!this.swingArmComponent.isMotorBusy()) {
                         this.swingArmComponent.goToIntakePosition();
                         this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_INTAKE_POSITION);
-                } else if(this.swingArmComponent.getSwingArmMotorPosition() < 30) {
-                    this.state = State.INTERNAL_LIFT;
+                        this.state = State.AT_INTAKE_POSITION;
+                    } else if(this.swingArmComponent.getSwingArmMotorPosition() <= SwingArmComponent.SWING_ARM_FLIP_POSITION - RETURN_CRITICAL_POINT) {
+                        this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_INTAKE_POSITION);
+                    }
+
                 }
 
             }
 
-            case INTERNAL_LIFT -> {
+            case AT_INTAKE_POSITION -> {
 
-                if(this.liftComponent.getMotorTargetPosition() != LiftComponent.LIFT_POSITION_INTAKE) {
-                    this.liftComponent.goToEncoderPositionAsync(LiftComponent.LIFT_POSITION_INTAKE, LiftComponent.LIFT_SPEED);
-                    this.state = State.AT_INTAKE_POSITION;
-                }
+                if(this.swingArmComponent.getSwingArmMotorPosition() != SwingArmComponent.SWING_ARM_INTAKE_POSITION)
+                    this.state = State.AT_SCORING_POSITION;
 
             }
-
-            case AT_INTAKE_POSITION -> {}
 
         }
 

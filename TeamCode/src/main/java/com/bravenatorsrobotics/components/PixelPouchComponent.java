@@ -17,8 +17,9 @@ public class PixelPouchComponent {
     public static final double CLAMP_OPEN_POSITION = 0.975;
     public static final double CLAMP_CLOSE_POSITION = 0.7;
 
-    public static final double POUCH_INTAKE_POSITION = 0;
-    public static final double POUCH_SCORING_POSITION = 0.65;
+    public static final double POUCH_FLIP_POSITION = 0;
+    public static final double POUCH_INTAKE_POSITION = 0.35;
+    public static final double POUCH_SCORING_POSITION = 0.9;
 
     private static final double POUCH_SENSOR_DISTANCE = 36;
 
@@ -108,15 +109,6 @@ public class PixelPouchComponent {
                     this.pixelPouchStatus = PixelPouchStatus.OPEN_REQUESTED;
             }
         }
-
-    }
-
-    public void togglePouchPosition() {
-
-        if(pouchServo.getPosition() != POUCH_INTAKE_POSITION)
-            pouchServo.setPosition(POUCH_INTAKE_POSITION);
-        else
-            pouchServo.setPosition(POUCH_SCORING_POSITION);
 
     }
 
