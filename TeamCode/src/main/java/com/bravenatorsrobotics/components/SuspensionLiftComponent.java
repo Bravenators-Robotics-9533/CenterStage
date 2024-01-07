@@ -18,6 +18,7 @@ public class SuspensionLiftComponent {
     private static final double SUSPENSION_LIFT_DOWN_POWER = 1.0;
 
     private static final double SERVO_MOVE_TIME_SECONDS = 2.0;
+    private static final double FINISH_SUSPEND_TIME_SECONDS = 0.75;
 
     private final DcMotorEx suspensionLift;
     private final Servo suspensionLiftGuideServo;
@@ -27,9 +28,18 @@ public class SuspensionLiftComponent {
 
     private final RevTouchSensor magneticLimitSensor;
 
-    private boolean isLockingSequence = false;
+    private enum State {
 
-    private boolean areServosLocking = false;
+        STANDBY,
+        SUSPENDING,
+        LOCKING,
+        FINISHING_SUSPEND
+
+    }
+
+    private State state = State.STANDBY;
+
+    private boolean isUnlocking = false;
 
     public SuspensionLiftComponent(HardwareMap hardwareMap) {
 
@@ -57,7 +67,7 @@ public class SuspensionLiftComponent {
 
     public void setManualPower(double power) {
 
-        if(isLockingSequence)
+        if(this.state != State.STANDBY)
             return;
 
         double scaledRange = (power + 1.0) / 2.0;
@@ -67,43 +77,88 @@ public class SuspensionLiftComponent {
 
     }
 
-//    private final ElapsedTime timer = new ElapsedTime();
-    private final ElapsedTime servoTimer = new ElapsedTime();
+    private final ElapsedTime timer = new ElapsedTime();
 
     public void update() {
 
-        if(isLockingSequence) {
+        switch (this.state) {
 
-            if(this.magneticLimitSensor.isPressed()) {
+            case SUSPENDING -> {
 
-                this.suspensionLift.setPower(0);
-                this.suspensionLiftGuideServo.setPosition(0);
+                if(!this.magneticLimitSensor.isPressed()) {
 
-                this.lockLiftServos();
+                    this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    this.suspensionLift.setPower(-SUSPENSION_LIFT_DOWN_POWER);
+                    this.suspensionLiftGuideServo.setPosition(-1);
 
-                this.isLockingSequence = false;
+                } else {
+
+                    this.suspensionLift.setPower(0);
+                    this.suspensionLiftGuideServo.setPosition(0.5);
+
+                    this.state = State.LOCKING;
+                    this.timer.reset();
+
+                }
+
+            }
+
+            case LOCKING -> {
+
+                if(this.timer.seconds() < SERVO_MOVE_TIME_SECONDS) {
+
+                    this.leftLockingServo.setPosition(1);
+                    this.rightLockingServo.setPosition(1);
+
+                } else {
+
+                    this.leftLockingServo.setPosition(0.5);
+                    this.rightLockingServo.setPosition(0.5);
+
+                    this.state = State.FINISHING_SUSPEND;
+
+                }
+
+            }
+
+            case FINISHING_SUSPEND -> {
+
+                if(this.suspensionLift.getPower() == 0) {
+                    this.timer.reset();
+
+                    this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    this.suspensionLift.setVelocity(MOTOR_VELOCITY);
+                    this.suspensionLiftGuideServo.setPosition(1);
+
+                } else if(timer.seconds() > FINISH_SUSPEND_TIME_SECONDS) {
+
+                    this.suspensionLiftGuideServo.setPosition(0.5);
+                    this.suspensionLift.setPower(0);
+                    this.state = State.STANDBY;
+
+                }
+
             }
 
         }
 
-        if(areServosLocking) {
-            if(servoTimer.seconds() >= SERVO_MOVE_TIME_SECONDS) {
+        if(this.isUnlocking) {
+
+            if(this.timer.seconds() >= SERVO_MOVE_TIME_SECONDS) {
+
                 this.leftLockingServo.setPosition(0.5);
                 this.rightLockingServo.setPosition(0.5);
-                this.suspensionLiftGuideServo.setPosition(0.5);
-                areServosLocking = false;
+                this.isUnlocking = false;
+
             }
+
         }
 
     }
 
     public void runLockSequence() {
 
-        isLockingSequence = true;
-
-        this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        this.suspensionLift.setPower(-SUSPENSION_LIFT_DOWN_POWER);
-        this.suspensionLiftGuideServo.setPosition(-1);
+        this.state = State.SUSPENDING;
 
     }
 
@@ -112,18 +167,8 @@ public class SuspensionLiftComponent {
         this.leftLockingServo.setPosition(0);
         this.rightLockingServo.setPosition(0);
 
-        areServosLocking = true;
-        servoTimer.reset();
-
-    }
-
-    public void lockLiftServos() {
-
-        this.leftLockingServo.setPosition(1);
-        this.rightLockingServo.setPosition(1);
-
-        areServosLocking = true;
-        servoTimer.reset();
+        this.isUnlocking = true;
+        timer.reset();
 
     }
 
