@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LiftMultiComponentSystem {
 
-    public static final int RETURN_CRITICAL_POINT = 120;
+    public static final int RETURN_CRITICAL_POINT = 150;
     private static final int LIFT_ENCODER_TICK_TOLERANCE = 5;
 
     private final LiftComponent liftComponent;
