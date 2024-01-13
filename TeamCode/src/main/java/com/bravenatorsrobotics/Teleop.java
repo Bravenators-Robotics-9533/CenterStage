@@ -51,6 +51,8 @@ public class Teleop extends LinearOpMode {
 
     private float deltaTime = 0;
 
+    private static double changeHeading = 0;
+
     private double offsetHeading = 0;
 
     private void Initialize() {
@@ -58,9 +60,8 @@ public class Teleop extends LinearOpMode {
         Config config = new Config(this.hardwareMap.appContext);
         shouldUseMasterController = config.IsSingleControllerOverride();
 
-        this.offsetHeading = config.GetStartingPosition() == Config.StartingPosition.RED
-                ? Math.toRadians(-90)
-                : Math.toRadians(90);
+//        this.offsetHeading
+
 
         this.driverGamePad   = new FtcGamePad("Driver", gamepad1, this::OnDriverGamePadChange);
         this.operatorGamePad = new FtcGamePad("Operator", gamepad2, this::OnOperatorGamePadChange);
@@ -85,6 +86,9 @@ public class Teleop extends LinearOpMode {
         this.airplaneLauncher.initializeServo();
 
         this.liftMultiComponentSystem = new LiftMultiComponentSystem(this.liftComponent, this.swingArmComponent, this.pixelPouchComponent);
+
+        this.offsetHeading = changeHeading;
+        changeHeading = 0;
     }
 
     @Override
@@ -350,6 +354,10 @@ public class Teleop extends LinearOpMode {
         this.gamepad1.setLedColor(0, 0, 255, Gamepad.LED_DURATION_CONTINUOUS);
         this.gamepad2.setLedColor(255, 0, 0, Gamepad.LED_DURATION_CONTINUOUS);
 
+    }
+
+    public static void setChangeHeading(double heading) {
+        Teleop.changeHeading = heading;
     }
 
 }

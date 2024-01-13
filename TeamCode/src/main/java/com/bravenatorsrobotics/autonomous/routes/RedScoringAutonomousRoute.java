@@ -3,6 +3,7 @@ package com.bravenatorsrobotics.autonomous.routes;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.bravenatorsrobotics.Teleop;
 import com.bravenatorsrobotics.autonomous.Auto;
 import com.bravenatorsrobotics.autonomous.TeamPropLocation;
 import com.bravenatorsrobotics.autonomous.sequence.AlignVerticalToBackdropSequence;
@@ -34,6 +35,9 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
                 .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
                 .lineTo(new Vector2d(35, -26))
                 .build();
+
+        Teleop.setChangeHeading(this.drive.getRawExternalHeading() - Math.toRadians(90));
+
 
     }
 

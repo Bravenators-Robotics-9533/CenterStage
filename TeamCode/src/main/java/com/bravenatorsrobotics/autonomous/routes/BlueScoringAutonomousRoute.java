@@ -2,6 +2,7 @@ package com.bravenatorsrobotics.autonomous.routes;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.bravenatorsrobotics.Teleop;
 import com.bravenatorsrobotics.autonomous.Auto;
 import com.bravenatorsrobotics.autonomous.TeamPropLocation;
 import com.bravenatorsrobotics.autonomous.sequence.AlignVerticalToBackdropSequence;
@@ -32,6 +33,8 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
                 .addTemporalMarker(() -> auto.liftMultiComponentSystem.goToScoringPosition(LiftComponent.LIFT_POSITION_STAGE_LOWER_RELEASE))
                 .lineToLinearHeading(new Pose2d(36, 35, Math.toRadians(180)))
                 .build();
+
+        Teleop.setChangeHeading(this.drive.getRawExternalHeading() - Math.toRadians(90));
     }
 
     private void initialScoreOnBackdrop(TeamPropLocation teamPropLocation) {
@@ -40,7 +43,7 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
 
         double offset = switch (teamPropLocation) {
             case LEFT -> 10;
-            case RIGHT -> -14;
+            case RIGHT -> -10;
             case CENTER -> 0;
         };
 
@@ -79,7 +82,7 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
                     .build();
 
             case RIGHT -> drive.trajectorySequenceBuilder(HOME_POSITION)
-                    .lineToLinearHeading(new Pose2d(HOME_POSITION.getX() - 35, HOME_POSITION.getY() + 16, Math.toRadians(-90)))
+                    .lineToLinearHeading(new Pose2d(HOME_POSITION.getX() - 32, HOME_POSITION.getY() + 14, Math.toRadians(-90)))
                     .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
                     .waitSeconds(0.1)
                     .lineToConstantHeading(new Vector2d(HOME_POSITION.getX() - 25, HOME_POSITION.getY() + 16))
