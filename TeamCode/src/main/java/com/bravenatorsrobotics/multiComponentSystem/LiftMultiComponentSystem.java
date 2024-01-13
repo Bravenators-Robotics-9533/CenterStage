@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class LiftMultiComponentSystem {
 
-    public static final int RETURN_CRITICAL_POINT = 150;
+    public static final int RETURN_CRITICAL_POINT = 200;
     private static final int LIFT_ENCODER_TICK_TOLERANCE = 5;
 
     private final LiftComponent liftComponent;
@@ -101,6 +101,8 @@ public class LiftMultiComponentSystem {
 
     }
 
+    private static final int TOLERANCE = 10;
+
     private void intakePositionFlow() {
 
         switch (this.state) {
@@ -112,8 +114,7 @@ public class LiftMultiComponentSystem {
                     this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_FLIP_POSITION);
                     this.liftComponent.goToEncoderPositionAsync(LiftComponent.LIFT_POSITION_INTAKE, LiftComponent.LIFT_SPEED);
                 } else {
-
-                    if(!this.swingArmComponent.isMotorBusy()) {
+                    if(!this.swingArmComponent.isMotorBusy() && this.swingArmComponent.getSwingArmMotorPosition() <= SwingArmComponent.SWING_ARM_INTAKE_POSITION + TOLERANCE) {
                         this.swingArmComponent.goToIntakePosition();
                         this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_INTAKE_POSITION);
                         this.state = State.AT_INTAKE_POSITION;
@@ -127,7 +128,7 @@ public class LiftMultiComponentSystem {
 
             case AT_INTAKE_POSITION -> {
 
-                if(this.swingArmComponent.getSwingArmMotorPosition() != SwingArmComponent.SWING_ARM_INTAKE_POSITION)
+                if(this.swingArmComponent.getSwingArmMotorPosition() >= SwingArmComponent.SWING_ARM_INTAKE_POSITION + TOLERANCE)
                     this.state = State.AT_SCORING_POSITION;
 
             }
