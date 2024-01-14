@@ -48,8 +48,8 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
         Pose2d pos = super.runTrajectorySequence(START_POSITION, this.moveOffWall);
 
         double offset = switch (teamPropLocation) {
-            case LEFT -> 10.5;
-            case RIGHT -> -12;
+            case LEFT -> 10;
+            case RIGHT -> -12.2;
             case CENTER -> 0;
         };
 
@@ -79,11 +79,13 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             // RIGHT
             TrajectorySequence placePixelSequence = drive.trajectorySequenceBuilder(OFF_BACKDROP_POS)
                     .lineToLinearHeading(new Pose2d(33, -8, Math.toRadians(0)))
-                    .lineToConstantHeading(new Vector2d(24, -15.5))
+                    .lineToConstantHeading(new Vector2d(24.5, -15.5))
                     .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
                     .waitSeconds(0.1)
                     .splineToConstantHeading(new Vector2d(27, -10), Math.PI * 3 / 2)
-                    .lineToLinearHeading(new Pose2d(66, -10, Math.toRadians(180)))
+                    .lineTo(new Vector2d(40, -10))
+                    .lineToLinearHeading(new Pose2d(40, -66, Math.toRadians(180)))
+                    .lineToConstantHeading(new Vector2d(68, -66))
                     .build();
 
             super.runTrajectorySequence(OFF_BACKDROP_POS, placePixelSequence);
@@ -94,7 +96,7 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
                     .waitSeconds(0.1)
                     .lineToConstantHeading(new Vector2d(35, -26 + 9.5))
                     .lineToLinearHeading(OFF_BACKDROP_POS)
-                    .lineToConstantHeading(new Vector2d(OFF_BACKDROP_POS.getX() + 32, OFF_BACKDROP_POS.getY() + 28))
+                    .splineToConstantHeading(new Vector2d(OFF_BACKDROP_POS.getX() + 32, OFF_BACKDROP_POS.getY() - 36), Math.toRadians(0))
                     .build();
 
             super.runTrajectorySequence(OFF_BACKDROP_POS, placePixelSequence);
@@ -104,7 +106,7 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
                     .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
                     .waitSeconds(0.1)
                     .lineToConstantHeading(new Vector2d(35, -26 - 3))
-                    .splineToLinearHeading(new Pose2d(OFF_BACKDROP_POS.getX() + 30, OFF_BACKDROP_POS.getY() + 33, Math.toRadians(180)), Math.toRadians(0))
+                    .splineToLinearHeading(new Pose2d(OFF_BACKDROP_POS.getX() + 30, OFF_BACKDROP_POS.getY() - 33, Math.toRadians(180)), Math.toRadians(0))
                     .build();
 
             super.runTrajectorySequence(OFF_BACKDROP_POS, placePixelSequence);
