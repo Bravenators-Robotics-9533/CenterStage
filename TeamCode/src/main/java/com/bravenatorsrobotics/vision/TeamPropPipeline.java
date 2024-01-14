@@ -22,8 +22,8 @@ import java.util.Scanner;
 @Config
 public class TeamPropPipeline extends OpenCvPipeline {
 
-    public static double lowerBlueH = 0, lowerBlueS = 110, lowerBlueV = 180;
-    public static double upperBlueH = 10, upperBlueS = 200, upperBlueV = 255;
+    public static double lowerBlueH = 0, lowerBlueS = 95, lowerBlueV = 175;
+    public static double upperBlueH = 10, upperBlueS = 208, upperBlueV = 255;
 
     public static double lowerRedH = 112, lowerRedS = 110, lowerRedV = 110;
     public static double upperRedH = 130, upperRedS = 240, upperRedV = 255;

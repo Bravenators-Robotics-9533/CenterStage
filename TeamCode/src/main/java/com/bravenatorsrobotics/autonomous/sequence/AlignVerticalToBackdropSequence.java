@@ -57,7 +57,7 @@ public class AlignVerticalToBackdropSequence extends AutonomousSequence {
 
         boolean shouldDrive = false;
 
-        while(opMode.opModeIsActive() && !shouldDrive && searchingTimeout.seconds() < 3.0) {
+        while(opMode.opModeIsActive() && !shouldDrive && searchingTimeout.seconds() < 5.0) {
 
             ArrayList<AprilTagDetection> detections = this.aprilTagDetector.getDetections();
 
@@ -71,6 +71,9 @@ public class AlignVerticalToBackdropSequence extends AutonomousSequence {
 
         }
 
+        if(!shouldDrive) {
+            distance = 22;
+        }
 
         TrajectorySequence trajectory = drive.trajectorySequenceBuilder(startPos)
                 .lineToConstantHeading(new Vector2d(startPos.getX() + (distance - desiredDistanceInches), startPos.getY() + yInches))
