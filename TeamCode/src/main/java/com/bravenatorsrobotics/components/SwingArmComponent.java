@@ -31,13 +31,13 @@ public class SwingArmComponent {
 
     private ElapsedTime timer = new ElapsedTime();
 
-    public static double k_P_OUT = 0.002;
+    public static double k_P_OUT = 0.006;
     public static double k_P_IN = 0.0004;
 
     public static double k_I_OUT = 0.0;
     public static double k_I_IN = 0.0;
 
-    public static double k_D_OUT = 0.0;
+    public static double k_D_OUT = 0.00041;
     public static double k_D_IN = 0.0;
 
     private double p, i, d = 0;
