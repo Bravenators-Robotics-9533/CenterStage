@@ -19,7 +19,7 @@ public class PixelPouchComponent {
 
     public static final double POUCH_FLIP_POSITION = 0;
     public static final double POUCH_INTAKE_POSITION = 0.35;
-    public static final double POUCH_SCORING_POSITION = 0.9;
+    public static final double POUCH_SCORING_POSITION = 0.7;
 
     private static final double POUCH_SENSOR_DISTANCE = 36;
 

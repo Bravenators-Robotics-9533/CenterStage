@@ -1,14 +1,16 @@
 package com.bravenatorsrobotics.multiComponentSystem;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.bravenatorsrobotics.components.LiftComponent;
 import com.bravenatorsrobotics.components.PixelPouchComponent;
 import com.bravenatorsrobotics.components.SwingArmComponent;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 public class LiftMultiComponentSystem {
 
-    public static final int RETURN_CRITICAL_POINT = 200;
+    public static int RETURN_CRITICAL_POINT = 300;
     private static final int LIFT_ENCODER_TICK_TOLERANCE = 5;
 
     private final LiftComponent liftComponent;
@@ -80,7 +82,7 @@ public class LiftMultiComponentSystem {
                         this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_SCORING_POSITION);
                         this.state = State.AT_SCORING_POSITION;
 
-                    } else if(this.swingArmComponent.getSwingArmMotorPosition() >= SwingArmComponent.SWING_ARM_FLIP_POSITION) {
+                    } else if(this.swingArmComponent.getSwingArmMotorPosition() >= SwingArmComponent.SWING_ARM_SAFE_SCORING_POSITION) {
                         this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_SCORING_POSITION);
                     }
                 }
@@ -118,8 +120,8 @@ public class LiftMultiComponentSystem {
                         this.swingArmComponent.goToIntakePosition();
                         this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_INTAKE_POSITION);
                         this.state = State.AT_INTAKE_POSITION;
-                    } else if(this.swingArmComponent.getSwingArmMotorPosition() <= SwingArmComponent.SWING_ARM_FLIP_POSITION - RETURN_CRITICAL_POINT) {
-                        this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_INTAKE_POSITION);
+                    } else if(this.swingArmComponent.getSwingArmMotorPosition() <= RETURN_CRITICAL_POINT) {
+                        this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_INTAKE_POSITION + 0.05);
                     }
 
                 }
@@ -150,7 +152,6 @@ public class LiftMultiComponentSystem {
         this.swingArmComponent.printTelemetry(telemetry);
         this.pixelPouchComponent.printTelemetry(telemetry);
 
-        telemetry.addData("Is Swing Arm Motor Busy", swingArmComponent.isMotorBusy());
         telemetry.addData("Is Lift Motor Busy", liftComponent.isMotorBusy());
         telemetry.addData("Lift Multi-Component System State", this.state.name());
         telemetry.addData("Lift Live Adjust Position", this.liveExternalLiftPosition);
