@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class PixelPouchComponent {
 
-    public static final double CLAMP_OPEN_POSITION = 0.975;
-    public static final double CLAMP_CLOSE_POSITION = 0.7;
+    public static final double CLAMP_OPEN_POSITION = 1.0;
+    public static final double CLAMP_CLOSE_POSITION = 0;
 
     public static final double POUCH_FLIP_POSITION = 0;
     public static final double POUCH_INTAKE_POSITION = 0.35;
