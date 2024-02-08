@@ -1,6 +1,5 @@
 package com.bravenatorsrobotics.autonomous;
 
-import com.bravenatorsrobotics.BulkRead;
 import com.bravenatorsrobotics.autonomous.routes.AutonomousRoute;
 import com.bravenatorsrobotics.autonomous.routes.BlueScoringAutonomousRoute;
 import com.bravenatorsrobotics.autonomous.routes.RedScoringAutonomousRoute;
@@ -37,8 +36,6 @@ public class Auto extends LinearOpMode {
 
         telemetry.addData("Status", "Initialing...");
         telemetry.update();
-
-        BulkRead.setMode(this.hardwareMap, BulkRead.Mode.AUTOMATIC);
 
         // Config
         this.config = new Config(hardwareMap.appContext);

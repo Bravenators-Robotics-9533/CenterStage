@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.Range;
 
 import roadrunner.drive.MecanumDrive;
@@ -54,12 +55,13 @@ public class Teleop extends LinearOpMode {
 
     private double offsetHeading = 0;
 
-    private void initialize() {
-
-        BulkRead.setMode(this.hardwareMap, BulkRead.Mode.MANUAL);
+    private void Initialize() {
 
         Config config = new Config(this.hardwareMap.appContext);
         shouldUseMasterController = config.IsSingleControllerOverride();
+
+//        this.offsetHeading
+
 
         this.driverGamePad   = new FtcGamePad("Driver", gamepad1, this::OnDriverGamePadChange);
         this.operatorGamePad = new FtcGamePad("Operator", gamepad2, this::OnOperatorGamePadChange);
@@ -94,7 +96,7 @@ public class Teleop extends LinearOpMode {
         telemetry.addData("Status", "Initializing...");
         telemetry.update();
 
-        initialize();
+        Initialize();
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -104,8 +106,6 @@ public class Teleop extends LinearOpMode {
         long currentTime, previousTime = System.currentTimeMillis();
 
         while (opModeIsActive()) {
-
-            BulkRead.clearHubCache();
 
             // Calculate delta-time
             currentTime = System.currentTimeMillis();
