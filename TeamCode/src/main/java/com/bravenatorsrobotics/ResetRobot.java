@@ -18,7 +18,6 @@ public class ResetRobot extends LinearOpMode {
         waitForAPressed("Move Suspension Hooks to Locked Position");
 
         // Move Suspension Hooks
-        suspensionLiftComponent.unlockLiftLocks();
 
         while(opModeIsActive()) {
             suspensionLiftComponent.update();

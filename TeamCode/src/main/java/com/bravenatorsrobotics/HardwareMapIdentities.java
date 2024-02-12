@@ -11,13 +11,9 @@ public class HardwareMapIdentities {
     public static final String SWING_ARM = "swingArm";
 
     public static final String SUSPENSION_LIFT = "suspensionLift";
-    public static final String SUSPENSION_LIFT_GUIDE = "suspensionGuide";
-    public static final String SUSPENSION_LIFT_MAGNETIC_LIMIT_SENSOR = "suspensionMagneticLimit";
-
-    public static final String LEFT_LOCKING_SERVO = "leftLock";
-    public static final String RIGHT_LOCKING_SERVO = "rightLock";
 
     public static final String AIRPLANE_LAUNCHER_SERVO = "airplane";
+    public static final String SCISSOR_LIFT_SERVO = "scissorLift";
 
     public static final String POUCH_WEBCAM = "Pouch Cam";
     public static final String LIFT_WEBCAM = "Lift Cam";
