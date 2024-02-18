@@ -120,6 +120,7 @@ public class Teleop extends LinearOpMode {
 
             this.liftMultiComponentSystem.update();
             this.suspensionLiftComponent.update();
+            this.suspensionLiftComponent.telemetry(telemetry);
 
             this.liftMultiComponentSystem.telemetry(telemetry);
 

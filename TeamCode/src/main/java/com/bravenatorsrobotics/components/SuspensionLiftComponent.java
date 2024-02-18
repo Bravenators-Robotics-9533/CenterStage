@@ -12,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class SuspensionLiftComponent {
 
-    private static final double SERVO_VELOCITY = 1.2821; // rev/s.
-    private static final double MOTOR_VELOCITY = (1680 * SERVO_VELOCITY) / 2;
+    private static final double SERVO_VELOCITY = 0.5850631; // rev/s. MAX 1.2821
+    private static final double MAX_MOTOR_VELOCITY = 2500; // MAX 2580
 
     private static final double SUSPENSION_LIFT_DOWN_POWER = 1.0;
 
@@ -65,15 +65,18 @@ public class SuspensionLiftComponent {
 
     }
 
+    private double calculateServoSpeed() {
+
+        double instantaneousServoVelocity = (SERVO_VELOCITY * this.suspensionLift.getVelocity()) / MAX_MOTOR_VELOCITY;
+
+        return (instantaneousServoVelocity + 1.0) / 2.0;
+
+    }
+
     public void setManualPower(double power) {
 
-        if(this.state != State.STANDBY)
-            return;
-
-        double scaledRange = (power + 1.0) / 2.0;
-
-        this.suspensionLiftGuideServo.setPosition(scaledRange);
-        this.suspensionLift.setVelocity(MOTOR_VELOCITY * power);
+        this.suspensionLift.setVelocity(MAX_MOTOR_VELOCITY * power);
+        this.suspensionLiftGuideServo.setPosition(calculateServoSpeed());
 
     }
 
@@ -127,7 +130,7 @@ public class SuspensionLiftComponent {
                     this.timer.reset();
 
                     this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                    this.suspensionLift.setVelocity(MOTOR_VELOCITY);
+                    this.suspensionLift.setVelocity(MAX_MOTOR_VELOCITY);
                     this.suspensionLiftGuideServo.setPosition(1);
 
                 } else if(timer.seconds() > FINISH_SUSPEND_TIME_SECONDS) {
