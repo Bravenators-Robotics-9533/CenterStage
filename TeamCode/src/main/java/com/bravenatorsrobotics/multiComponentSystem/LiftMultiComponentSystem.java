@@ -105,6 +105,8 @@ public class LiftMultiComponentSystem {
 
     private static final int TOLERANCE = 10;
 
+
+
     private void intakePositionFlow() {
 
         switch (this.state) {
