@@ -1,14 +1,16 @@
 package com.bravenatorsrobotics.multiComponentSystem;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.bravenatorsrobotics.components.LiftComponent;
 import com.bravenatorsrobotics.components.PixelPouchComponent;
 import com.bravenatorsrobotics.components.SwingArmComponent;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Config
 public class LiftMultiComponentSystem {
 
-    public static final int RETURN_CRITICAL_POINT = 200;
+    public static int RETURN_CRITICAL_POINT = 300;
     private static final int LIFT_ENCODER_TICK_TOLERANCE = 5;
 
     private final LiftComponent liftComponent;
@@ -114,11 +116,10 @@ public class LiftMultiComponentSystem {
                     this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_FLIP_POSITION);
                     this.liftComponent.goToEncoderPositionAsync(LiftComponent.LIFT_POSITION_INTAKE, LiftComponent.LIFT_SPEED);
                 } else {
-                    if(!this.swingArmComponent.isMotorBusy() && this.swingArmComponent.getSwingArmMotorPosition() <= SwingArmComponent.SWING_ARM_INTAKE_POSITION + TOLERANCE) {
-                        this.swingArmComponent.goToIntakePosition();
+                    if(!this.swingArmComponent.isMotorBusy()) {
                         this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_INTAKE_POSITION);
                         this.state = State.AT_INTAKE_POSITION;
-                    } else if(this.swingArmComponent.getSwingArmMotorPosition() <= SwingArmComponent.SWING_ARM_FLIP_POSITION - RETURN_CRITICAL_POINT) {
+                    } else if(this.swingArmComponent.getSwingArmMotorPosition() <= SwingArmComponent.SWING_ARM_FLIP_POSITION) {
                         this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_INTAKE_POSITION);
                     }
 
