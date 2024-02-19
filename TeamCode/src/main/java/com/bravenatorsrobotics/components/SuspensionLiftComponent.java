@@ -12,8 +12,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class SuspensionLiftComponent {
 
-    private static final double SERVO_VELOCITY = 1.2821; // rev/s.
-    private static final double MOTOR_VELOCITY = (1680 * SERVO_VELOCITY) / 2;
+    private static final double SERVO_VELOCITY = 0.5850631; // rev/s. 1.2821 MAX
+    private static final double MOTOR_VELOCITY = 5200;
 
     private static final double SUSPENSION_LIFT_DOWN_POWER = 1.0;
 
@@ -70,10 +70,12 @@ public class SuspensionLiftComponent {
         if(this.state != State.STANDBY)
             return;
 
-        double scaledRange = (power + 1.0) / 2.0;
-
-        this.suspensionLiftGuideServo.setPosition(scaledRange);
         this.suspensionLift.setVelocity(MOTOR_VELOCITY * power);
+
+        double servoPower = (MOTOR_VELOCITY * power * SERVO_VELOCITY) / MOTOR_VELOCITY;
+        servoPower = (servoPower + 1.0) / 2.0;
+
+        this.suspensionLiftGuideServo.setPosition(servoPower);
 
     }
 
