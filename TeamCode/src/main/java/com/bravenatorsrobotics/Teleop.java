@@ -190,7 +190,7 @@ public class Teleop extends LinearOpMode {
             }
 
             case FtcGamePad.GAMEPAD_B -> { // Suspend If Driver is also pressing
-                if (isPressed && !this.suspensionLiftComponent.isLimitSensorTriggered()) {
+                if (isPressed) {
                     this.suspensionLiftComponent.runLockSequence();
                 }
             }
@@ -264,7 +264,7 @@ public class Teleop extends LinearOpMode {
 
         double speedLimit = MAX_ROBOT_SPEED;
 
-        if(!suspensionLiftComponent.isLimitSensorTriggered() && !shouldOverrideSuspensionSlow)
+        if(!shouldOverrideSuspensionSlow)
             speedLimit = SUSPENSION_SLOW_SPEED;
         else if(isSlowModeActive)
             speedLimit = SLOW_MODE_SPEED;

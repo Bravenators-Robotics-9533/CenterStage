@@ -1,5 +1,6 @@
 package com.bravenatorsrobotics.components;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.bravenatorsrobotics.HardwareMapIdentities;
 import com.bravenatorsrobotics.eventSystem.Callback;
 import com.bravenatorsrobotics.eventSystem.CallbackSystem;
@@ -12,14 +13,15 @@ import com.qualcomm.robotcore.hardware.Servo;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
+@Config
 public class PixelPouchComponent {
 
     public static final double CLAMP_OPEN_POSITION = 1.0;
     public static final double CLAMP_CLOSE_POSITION = 0;
 
-    public static final double POUCH_FLIP_POSITION = 0;
-    public static final double POUCH_INTAKE_POSITION = 0.35;
-    public static final double POUCH_SCORING_POSITION = 0.7;
+    public static double POUCH_FLIP_POSITION = 0;
+    public static double POUCH_INTAKE_POSITION = 0.45;
+    public static double POUCH_SCORING_POSITION = 0.7;
 
     private static final double POUCH_SENSOR_DISTANCE = 36;
 

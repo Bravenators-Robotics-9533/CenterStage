@@ -10,7 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class LiftMultiComponentSystem {
 
-    public static int RETURN_CRITICAL_POINT = 350;
+    public static int RETURN_CRITICAL_POINT = 415;
     private static final int LIFT_ENCODER_TICK_TOLERANCE = 5;
 
     private final LiftComponent liftComponent;
@@ -70,22 +70,8 @@ public class LiftMultiComponentSystem {
 
             case AT_INTAKE_POSITION -> {
 
-                if(this.swingArmComponent.getTargetPosition() != SwingArmComponent.SWING_ARM_SCORING_POSITION) {
-
-                    this.swingArmComponent.goToScoringPosition();
-                    this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_FLIP_POSITION);
-                    this.liftComponent.goToEncoderPositionAsync(targetExternalLiftPosition, LiftComponent.LIFT_SPEED);
-
-                } else {
-                    if(!this.swingArmComponent.isMotorBusy()) {
-
-                        this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_SCORING_POSITION);
-                        this.state = State.AT_SCORING_POSITION;
-
-                    } else if(this.swingArmComponent.getSwingArmMotorPosition() >= SwingArmComponent.SWING_ARM_SAFE_SCORING_POSITION) {
-                        this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_SCORING_POSITION);
-                    }
-                }
+                this.swingArmComponent.goToFlipPosition();
+                this.pixelPouchComponent.setPouchPosition(PixelPouchComponent.POUCH_FLIP_POSITION);
 
             }
 

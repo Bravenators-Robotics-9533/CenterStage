@@ -14,15 +14,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class SwingArmComponent {
 
-    public static final int SWING_ARM_SAFE_INTAKE_POSITION = 600;
-    public static final int SWING_ARM_SAFE_SCORING_POSITION = 450;
 
-    public static final double SWING_ARM_MOTOR_SPEED_FLIP = 0.5;
-    public static final double SWING_ARM_MOTOR_SPEED_OUT = 0.85;
-    public static final double SWING_ARM_MOTOR_SPEED_IN = 0.2;
-
-    public static final int SWING_ARM_INTAKE_POSITION = 0;
-    public static final int SWING_ARM_SCORING_POSITION = 750;
+    public static int SWING_ARM_INTAKE_POSITION = 0;
+    public static int SWING_ARM_FLIP_POSITION = 500;
+    public static int SWING_ARM_SCORING_POSITION = 750;
 
     private static final int SWING_ARM_TOLERANCE = 10;
 
@@ -31,8 +26,8 @@ public class SwingArmComponent {
 
     private ElapsedTime timer = new ElapsedTime();
 
-    public static double k_P_OUT = 0.006;
-    public static double k_P_IN = 0.0004;
+    public static double k_P_OUT = 0.002;
+    public static double k_P_IN = 0.0003;
 
     public static double k_I_OUT = 0.0;
     public static double k_I_IN = 0.0;
@@ -77,7 +72,7 @@ public class SwingArmComponent {
         if(this.targetPosition != this.previousTargetPosition)
             this.i = 0;
 
-        if(this.targetPosition == SWING_ARM_SCORING_POSITION) {
+        if(this.targetPosition != SWING_ARM_INTAKE_POSITION) {
 
             p = k_P_OUT * currentError;
 
@@ -129,6 +124,13 @@ public class SwingArmComponent {
 
         this.currentState = State.INTAKE;
         this.targetPosition = SWING_ARM_INTAKE_POSITION;
+
+    }
+
+    public void goToFlipPosition() {
+
+        this.currentState = State.FLIP_POSITION;
+        this.targetPosition = SWING_ARM_FLIP_POSITION;
 
     }
 
