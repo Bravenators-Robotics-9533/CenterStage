@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class PixelPouchComponent {
 
-    public static final double CLAMP_OPEN_POSITION = 0.975;
-    public static final double CLAMP_CLOSE_POSITION = 0.7;
+    public static final double CLAMP_OPEN_POSITION = 1;
+    public static final double CLAMP_CLOSE_POSITION = 0;
 
     public static final double POUCH_FLIP_POSITION = 0;
     public static final double POUCH_INTAKE_POSITION = 0.35;
@@ -149,6 +149,8 @@ public class PixelPouchComponent {
 
     public void printTelemetry(Telemetry telemetry) {
 
+        telemetry.addData("Pixel Pouch Status", this.pixelPouchStatus);
+        telemetry.addData("SHOULD DO THE GRIPPY", this.isPixelDetected());
         telemetry.addData("Pixel Pouch Servo Position", this.pouchServo.getPosition());
         telemetry.addData("Pixel Pouch Distance", this.pouchDistanceSensor.getDistance(DistanceUnit.MM));
 
