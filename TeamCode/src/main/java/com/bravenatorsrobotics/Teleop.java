@@ -15,7 +15,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gamepad;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.util.Range;
 
 import roadrunner.drive.MecanumDrive;
@@ -80,7 +79,6 @@ public class Teleop extends LinearOpMode {
         this.swingArmComponent = new SwingArmComponent(super.hardwareMap);
 
         this.suspensionLiftComponent = new SuspensionLiftComponent(super.hardwareMap);
-        this.suspensionLiftComponent.initializeServos();
 
         this.airplaneLauncher = new AirplaneLauncher(super.hardwareMap);
         this.airplaneLauncher.initializeServo();
@@ -113,7 +111,6 @@ public class Teleop extends LinearOpMode {
             previousTime = currentTime;
 
             this.handleDrive();
-            this.handleLift();
 
             this.pixelPouchComponent.update();
             this.swingArmComponent.update();
@@ -139,13 +136,16 @@ public class Teleop extends LinearOpMode {
             driverGamePad.update();
             operatorGamePad.update();
 
-//            this.pixelPouchComponent.printTelemetry(telemetry);
             telemetry.addData("Safe To Drive W/ Suspension", !shouldOverrideSuspensionSlow);
             telemetry.update();
 
         }
 
     }
+
+    private boolean isDriverPressingB = false;
+    private boolean isDriverPressingY = false;
+    private boolean isDriverDpadUp = false;
 
     private void OnDriverGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
 
@@ -166,12 +166,21 @@ public class Teleop extends LinearOpMode {
                     shouldOverrideSuspensionSlow = !shouldOverrideSuspensionSlow;
             }
 
+            case FtcGamePad.GAMEPAD_Y -> isDriverPressingY = isPressed;
+            case FtcGamePad.GAMEPAD_DPAD_UP -> isDriverDpadUp = isPressed;
+
+            case FtcGamePad.GAMEPAD_B -> isDriverPressingB = isPressed;
+
+        }
+
+        if(isDriverPressingY && isDriverDpadUp) {
+            airplaneLauncher.launch();
         }
 
     }
 
-    private boolean isRightBumper = false;
-    private boolean isLeftBumper = false;
+    private boolean isOperatorRightBumper = false;
+    private boolean isOperatorLeftBumper = false;
 
     private void OnOperatorGamePadChange(FtcGamePad gamepad, int button, boolean isPressed) {
 
@@ -189,8 +198,8 @@ public class Teleop extends LinearOpMode {
             }
 
             case FtcGamePad.GAMEPAD_B -> { // Suspend If Driver is also pressing
-                if (isPressed && !this.suspensionLiftComponent.isLimitSensorTriggered()) {
-                    this.suspensionLiftComponent.runLockSequence();
+                if (isPressed && isDriverPressingB) {
+                    suspensionLiftComponent.raiseHooks();
                 }
             }
 
@@ -222,17 +231,14 @@ public class Teleop extends LinearOpMode {
                 }
             }
 
-            case FtcGamePad.GAMEPAD_RBUMPER -> isRightBumper = isPressed;
-            case FtcGamePad.GAMEPAD_LBUMPER -> isLeftBumper = isPressed;
+            case FtcGamePad.GAMEPAD_RBUMPER -> isOperatorRightBumper = isPressed;
+            case FtcGamePad.GAMEPAD_LBUMPER -> isOperatorLeftBumper = isPressed;
 
-            case FtcGamePad.GAMEPAD_BACK -> {
-                if (isPressed)
-                    suspensionLiftComponent.unlockLiftLocks();
-            }
         }
 
-        if(isRightBumper && isLeftBumper)
-            this.airplaneLauncher.launch();
+        if(isOperatorRightBumper && isOperatorLeftBumper) {
+            this.suspensionLiftComponent.suspend();
+        }
 
     }
 
@@ -263,7 +269,7 @@ public class Teleop extends LinearOpMode {
 
         double speedLimit = MAX_ROBOT_SPEED;
 
-        if(!suspensionLiftComponent.isLimitSensorTriggered() && !shouldOverrideSuspensionSlow)
+        if(!shouldOverrideSuspensionSlow)
             speedLimit = SUSPENSION_SLOW_SPEED;
         else if(isSlowModeActive)
             speedLimit = SLOW_MODE_SPEED;
@@ -274,13 +280,6 @@ public class Teleop extends LinearOpMode {
         backRightPower  = Range.clip(backRightPower, -speedLimit, speedLimit);
 
         drive.setMotorPowers(frontLeftPower, backLeftPower, backRightPower, frontRightPower);
-    }
-
-    private void handleLift() {
-
-        double suspensionLiftPower = Range.clip(Math.pow(gamepad2.right_trigger - gamepad2.left_trigger, 3), -1.0, 1.0);
-        this.suspensionLiftComponent.setManualPower(suspensionLiftPower);
-
     }
 
     private enum PixelColor {
