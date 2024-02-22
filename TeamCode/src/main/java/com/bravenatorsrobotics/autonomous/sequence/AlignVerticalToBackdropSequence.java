@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.bravenatorsrobotics.HardwareMapIdentities;
+import com.bravenatorsrobotics.autonomous.routes.AutonomousRoute;
 import com.bravenatorsrobotics.vision.AprilTagDetector;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -20,14 +21,14 @@ import roadrunner.trajectorysequence.TrajectorySequence;
 public class AlignVerticalToBackdropSequence extends AutonomousSequence {
 
     private final LinearOpMode opMode;
-    private final MecanumDrive drive;
+    private final AutonomousRoute autonomousRoute;
     private final double desiredDistanceInches;
 
     private AprilTagDetector aprilTagDetector;
 
-    public AlignVerticalToBackdropSequence(LinearOpMode opMode, MecanumDrive drive, double desiredDistanceInches) {
+    public AlignVerticalToBackdropSequence(LinearOpMode opMode, AutonomousRoute autonomousRoute, double desiredDistanceInches) {
         this.opMode = opMode;
-        this.drive = drive;
+        this.autonomousRoute = autonomousRoute;
         this.desiredDistanceInches = desiredDistanceInches;
     }
 
@@ -75,15 +76,11 @@ public class AlignVerticalToBackdropSequence extends AutonomousSequence {
             distance = 22;
         }
 
-        TrajectorySequence trajectory = drive.trajectorySequenceBuilder(startPos)
+        TrajectorySequence trajectory = autonomousRoute.drive.trajectorySequenceBuilder(startPos)
                 .lineToConstantHeading(new Vector2d(startPos.getX() + (distance - desiredDistanceInches), startPos.getY() + yInches))
                 .build();
 
-        drive.followTrajectorySequenceAsync(trajectory);
-
-        while(opMode.opModeIsActive() && drive.isBusy()) {
-            drive.update();
-        }
+        autonomousRoute.runTrajectorySequence(startPos, trajectory);
 
         return new AlignResult(trajectory.end(), distance);
     }

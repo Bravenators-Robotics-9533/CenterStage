@@ -132,6 +132,8 @@ public class Teleop extends LinearOpMode {
                 this.didAutoChangeSlowMode = false;
             }
 
+            double manualPower = gamepad2.left_trigger - gamepad2.right_trigger;
+            suspensionLiftComponent.setManualPower(manualPower);
 
             driverGamePad.update();
             operatorGamePad.update();

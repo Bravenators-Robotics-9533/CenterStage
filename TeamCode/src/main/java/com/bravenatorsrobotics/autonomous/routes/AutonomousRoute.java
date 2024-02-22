@@ -10,12 +10,12 @@ import roadrunner.trajectorysequence.TrajectorySequence;
 
 public abstract class AutonomousRoute {
 
-    protected final MecanumDrive drive;
+    public final MecanumDrive drive;
 
     public static final double WIDTH = 16.6;
     public static final double HEIGHT = 17.0;
 
-    protected final Auto auto;
+    public final Auto auto;
     private final ElapsedTime timer = new ElapsedTime();
 
     public AutonomousRoute(Auto auto, MecanumDrive drive) {
@@ -28,7 +28,9 @@ public abstract class AutonomousRoute {
 
     protected void waitMillis(int millis) {
         timer.reset();
-        while(opModeIsActive() && timer.milliseconds() <= millis);
+        while(opModeIsActive() && timer.milliseconds() <= millis) {
+            this.idle();
+        }
     }
 
     /**
@@ -37,7 +39,7 @@ public abstract class AutonomousRoute {
      * @param trajectorySequence the sequence to run
      * @return the ending position after the sequence
      */
-    protected Pose2d runTrajectorySequence(Pose2d startPosition, TrajectorySequence trajectorySequence) {
+    public Pose2d runTrajectorySequence(Pose2d startPosition, TrajectorySequence trajectorySequence) {
 
         this.drive.setPoseEstimate(startPosition);
         this.drive.followTrajectorySequenceAsync(trajectorySequence);
@@ -48,7 +50,7 @@ public abstract class AutonomousRoute {
 
     }
 
-    private void idle() {
+    protected void idle() {
 
         while(opModeIsActive() && (drive.isBusy() || auto.liftMultiComponentSystem.isBusy())) {
 

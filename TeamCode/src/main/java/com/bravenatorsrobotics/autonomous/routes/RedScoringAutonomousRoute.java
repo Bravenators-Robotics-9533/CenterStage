@@ -28,7 +28,7 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
     @Override
     public void initialize() {
 
-        this.alignVerticalToBackdropSequence = new AlignVerticalToBackdropSequence(super.auto, super.drive, 6);
+        this.alignVerticalToBackdropSequence = new AlignVerticalToBackdropSequence(super.auto, this, 6);
         this.alignVerticalToBackdropSequence.initializeVision();
 
         this.moveOffWall = drive.trajectorySequenceBuilder(START_POSITION)

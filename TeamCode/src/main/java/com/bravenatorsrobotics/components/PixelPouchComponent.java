@@ -26,7 +26,7 @@ public class PixelPouchComponent {
     private final CallbackSystem onClampCallbackSystem = new CallbackSystem();
     private final CallbackSystem onReleaseCallbackSystem = new CallbackSystem();
 
-    private enum PixelPouchStatus {
+    public enum PixelPouchStatus {
 
         OPEN,
         CLOSED,
@@ -111,6 +111,8 @@ public class PixelPouchComponent {
         }
 
     }
+
+    public PixelPouchStatus getStatus() { return this.pixelPouchStatus; }
 
     public void setClampPosition(double position) { this.clampServo.setPosition(position); }
 
