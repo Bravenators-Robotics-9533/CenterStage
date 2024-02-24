@@ -11,7 +11,8 @@ public class HardwareMapIdentities {
     public static final String SWING_ARM = "swingArm";
 
     public static final String SUSPENSION_LIFT = "suspensionLift";
-    public static final String SCISSOR_LIFT = "scissorLift";
+    public static final String LEFT_ARM = "leftArm";
+    public static final String RIGHT_ARM = "rightArm";
 
     public static final String AIRPLANE_LAUNCHER_SERVO = "airplane";
 

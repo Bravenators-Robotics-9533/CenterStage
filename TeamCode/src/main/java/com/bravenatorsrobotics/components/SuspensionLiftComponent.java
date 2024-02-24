@@ -13,20 +13,24 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Config
 public class SuspensionLiftComponent {
 
-    private static final double SERVO_VELOCITY = 0.5850631; // rev/s. 1.2821 MAX
     private static final double MOTOR_VELOCITY = 5200;
 
-    public static int MOTOR_TARGET_POSITION = 500;
+    public static double LEFT_ARM_POSITION = 0.75;
+    public static double RIGHT_ARM_POSITION = 0.5;
+
+    public static double LEFT_UP_ARM_POSITION = 0.7;
+    public static double RIGHT_UP_ARM_POSITION = 0.6;
+
 
     private final DcMotorEx suspensionLift;
-    private final Servo scissorLift;
+    private final Servo leftArm;
+    private final Servo rightArm;
 
-    private enum State {
+    public enum State {
 
         STANDBY,
         RAISING_HOOKS,
-        RAISED_STANDBY,
-        SUSPENDING
+        RAISED_STANDBY
 
     }
 
@@ -39,23 +43,24 @@ public class SuspensionLiftComponent {
         this.suspensionLift.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         this.suspensionLift.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        this.scissorLift = hardwareMap.get(Servo.class, HardwareMapIdentities.SCISSOR_LIFT);
+        this.leftArm = hardwareMap.get(Servo.class, HardwareMapIdentities.LEFT_ARM);
+        this.rightArm = hardwareMap.get(Servo.class, HardwareMapIdentities.RIGHT_ARM);
+
+        this.leftArm.setDirection(Servo.Direction.REVERSE);
+        this.rightArm.setDirection(Servo.Direction.FORWARD);
 
     }
 
     public void setManualPower(double power) {
 
-        double scissorServoPosition = ((SERVO_VELOCITY * power) + 1.0) / 2.0;
-
-        this.suspensionLift.setVelocity(MOTOR_VELOCITY * power);
-        this.scissorLift.setPosition(scissorServoPosition);
+        if(this.state == State.RAISED_STANDBY)
+            this.suspensionLift.setVelocity(MOTOR_VELOCITY * power);
 
     }
 
-    public double getInstantaneousScissorServoPosition() {
-
-        return (((this.suspensionLift.getVelocity() * SERVO_VELOCITY) / MOTOR_VELOCITY) + 1.0) / 2.0;
-
+    public void init() {
+        this.leftArm.setPosition(0);
+        this.rightArm.setPosition(0);
     }
 
     public void update() {
@@ -64,20 +69,20 @@ public class SuspensionLiftComponent {
 
             case RAISING_HOOKS -> {
 
-                if(this.suspensionLift.getTargetPosition() != MOTOR_TARGET_POSITION) {
-                   this.suspensionLift.setTargetPosition(MOTOR_TARGET_POSITION);
-                   this.suspensionLift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                   this.suspensionLift.setVelocity(MOTOR_VELOCITY);
-                } else if(this.suspensionLift.isBusy()) {
-                    this.scissorLift.setPosition(getInstantaneousScissorServoPosition());
-                } else {
-                    this.scissorLift.setPosition(0.5); // STOP
-                    this.state = State.RAISED_STANDBY;
-                }
+                this.leftArm.setPosition(LEFT_ARM_POSITION);
+                this.rightArm.setPosition(RIGHT_ARM_POSITION);
+                this.state = State.RAISED_STANDBY;
 
             }
 
         }
+
+    }
+
+    public void moveHooks() {
+
+        this.leftArm.setPosition(LEFT_UP_ARM_POSITION);
+        this.rightArm.setPosition(RIGHT_UP_ARM_POSITION);
 
     }
 
@@ -88,15 +93,10 @@ public class SuspensionLiftComponent {
 
     }
 
-    public void suspend() {
-
-        if(this.state == State.RAISED_STANDBY)
-            this.state = State.SUSPENDING;
-
-    }
-
     public void telemetry(Telemetry telemetry) {
         telemetry.addData("Lift Pos", this.suspensionLift.getCurrentPosition());
     }
+
+    public State getState() { return this.state; }
 
 }

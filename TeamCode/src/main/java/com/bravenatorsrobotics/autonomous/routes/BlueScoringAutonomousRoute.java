@@ -86,7 +86,7 @@ public class BlueScoringAutonomousRoute extends AutonomousRoute {
                     .build();
 
             case RIGHT -> drive.trajectorySequenceBuilder(HOME_POSITION)
-                    .lineToLinearHeading(new Pose2d(HOME_POSITION.getX() - 32, HOME_POSITION.getY() + 14, Math.toRadians(-90)))
+                    .lineToLinearHeading(new Pose2d(HOME_POSITION.getX() - 34, HOME_POSITION.getY() + 14, Math.toRadians(-90)))
                     .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
                     .waitSeconds(0.1)
                     .lineToConstantHeading(new Vector2d(HOME_POSITION.getX() - 25, HOME_POSITION.getY() + 16))

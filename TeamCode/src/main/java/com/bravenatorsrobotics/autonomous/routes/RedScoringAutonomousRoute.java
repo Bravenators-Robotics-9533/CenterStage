@@ -102,7 +102,7 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
             super.runTrajectorySequence(OFF_BACKDROP_POS, placePixelSequence);
         } else if(teamPropLocation == TeamPropLocation.LEFT) {
             TrajectorySequence placePixelSequence = drive.trajectorySequenceBuilder(OFF_BACKDROP_POS)
-                    .lineToLinearHeading(new Pose2d(4.3, -26 - 2.75, Math.toRadians(270)))
+                    .lineToLinearHeading(new Pose2d(3, -26 - 2.75, Math.toRadians(270)))
                     .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
                     .waitSeconds(0.1)
                     .lineToConstantHeading(new Vector2d(35, -26 - 3))
