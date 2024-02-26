@@ -13,6 +13,7 @@ import com.bravenatorsrobotics.vision.OpenCVDetection;
 import com.bravenatorsrobotics.vision.TeamPropPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import roadrunner.drive.MecanumDrive;
 
@@ -86,6 +87,12 @@ public class Auto extends LinearOpMode {
         openCVDetection.stopStreaming();
 
         waitForStart(); // For Safety wait again for start // LOCKS THREAD!!!
+
+        ElapsedTime prewaitTimer = new ElapsedTime();
+
+        while(opModeIsActive() && prewaitTimer.seconds() < this.config.GetAutonomousWaitTime()) {
+
+        }
 
         // Set to intake position
         this.swingArmComponent.goToIntakePosition();

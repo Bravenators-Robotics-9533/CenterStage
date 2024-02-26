@@ -217,6 +217,14 @@ public class Teleop extends LinearOpMode {
                 }
             }
 
+            case FtcGamePad.GAMEPAD_Y -> {
+
+                if(isPressed) {
+                    suspensionLiftComponent.clearPole();
+                }
+
+            }
+
             case FtcGamePad.GAMEPAD_RBUMPER -> isOperatorRightBumper = isPressed;
             case FtcGamePad.GAMEPAD_LBUMPER -> isOperatorLeftBumper = isPressed;
 

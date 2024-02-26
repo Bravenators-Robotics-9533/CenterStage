@@ -10,6 +10,7 @@ public class ConfigurationOpMode extends LinearOpMode {
 
     private static final String SINGLE_CONTROLLER_OVERRIDE = "Single Controller Override";
     private static final String STARTING_POSITION = "Starting Position";
+    private static final String AUTONOMOUS_WAIT_TIME = "Autonomous Wait Time";
 
     @Override
     public void runOpMode() {
@@ -18,7 +19,8 @@ public class ConfigurationOpMode extends LinearOpMode {
         MENU.clearOptions();
 
         MENU.addOption(STARTING_POSITION, Config.StartingPosition.class, config.GetStartingPosition());
-        MENU.addOption(SINGLE_CONTROLLER_OVERRIDE, config.IsSingleControllerOverride());
+//        MENU.addOption(SINGLE_CONTROLLER_OVERRIDE, config.IsSingleControllerOverride());
+        MENU.addOption(AUTONOMOUS_WAIT_TIME, config.GetAutonomousWaitTime(), -1.0, 1.0);
 
         MENU.setGamepad(gamepad1);
         MENU.setTelemetry(telemetry);
@@ -28,8 +30,9 @@ public class ConfigurationOpMode extends LinearOpMode {
         while(!isStopRequested()) {
             MENU.displayMenu();
 
-            config.SetIsControllerOverride(Boolean.parseBoolean(MENU.getCurrentChoiceOf(SINGLE_CONTROLLER_OVERRIDE)));
+//            config.SetIsControllerOverride(Boolean.parseBoolean(MENU.getCurrentChoiceOf(SINGLE_CONTROLLER_OVERRIDE)));
             config.SetStartingPosition(Config.StartingPosition.toStartingPosition(MENU.getCurrentChoiceOf(STARTING_POSITION)));
+            config.SetAutonomousWaitTime(Float.parseFloat(MENU.getCurrentChoiceOf(AUTONOMOUS_WAIT_TIME)));
 
             sleep(50); // Keep the processor from dying
         }

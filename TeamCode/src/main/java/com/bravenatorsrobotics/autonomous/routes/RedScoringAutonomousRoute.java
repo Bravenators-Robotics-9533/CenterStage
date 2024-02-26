@@ -83,9 +83,9 @@ public class RedScoringAutonomousRoute extends AutonomousRoute {
                     .addTemporalMarker(() -> auto.pixelFunnelComponent.releasePixel())
                     .waitSeconds(0.1)
                     .splineToConstantHeading(new Vector2d(27, -10), Math.PI * 3 / 2)
-                    .lineTo(new Vector2d(40, -10))
+                    .lineTo(new Vector2d(27, -10))
                     .lineToLinearHeading(new Pose2d(40, -66, Math.toRadians(180)))
-                    .lineToConstantHeading(new Vector2d(68, -66))
+                    .lineToConstantHeading(new Vector2d(OFF_BACKDROP_POS.getX() + 32, -66))
                     .build();
 
             super.runTrajectorySequence(OFF_BACKDROP_POS, placePixelSequence);

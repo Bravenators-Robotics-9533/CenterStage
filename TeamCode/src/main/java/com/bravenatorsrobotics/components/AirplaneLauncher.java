@@ -11,6 +11,7 @@ public class AirplaneLauncher {
     public AirplaneLauncher(HardwareMap hardwareMap) {
 
         this.launcherServo = hardwareMap.get(Servo.class, HardwareMapIdentities.AIRPLANE_LAUNCHER_SERVO);
+        this.launcherServo.setDirection(Servo.Direction.REVERSE);
 
     }
 

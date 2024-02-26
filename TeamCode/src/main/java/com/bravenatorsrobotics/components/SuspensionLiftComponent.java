@@ -15,12 +15,11 @@ public class SuspensionLiftComponent {
 
     private static final double MOTOR_VELOCITY = 5200;
 
-    public static double LEFT_ARM_POSITION = 0.75;
-    public static double RIGHT_ARM_POSITION = 0.5;
+    public static double LEFT_ARM_POSITION = 0.65;
+    public static double RIGHT_ARM_POSITION = 0.35;
 
-    public static double LEFT_UP_ARM_POSITION = 0.7;
-    public static double RIGHT_UP_ARM_POSITION = 0.6;
-
+    public static double LEFT_ARM_UP_POSITION = 1;
+    public static double RIGHT_ARM_UP_POSITION = 0.55;
 
     private final DcMotorEx suspensionLift;
     private final Servo leftArm;
@@ -53,8 +52,7 @@ public class SuspensionLiftComponent {
 
     public void setManualPower(double power) {
 
-        if(this.state == State.RAISED_STANDBY)
-            this.suspensionLift.setVelocity(MOTOR_VELOCITY * power);
+        this.suspensionLift.setPower(power);
 
     }
 
@@ -65,31 +63,29 @@ public class SuspensionLiftComponent {
 
     public void update() {
 
-        switch (this.state) {
 
-            case RAISING_HOOKS -> {
-
-                this.leftArm.setPosition(LEFT_ARM_POSITION);
-                this.rightArm.setPosition(RIGHT_ARM_POSITION);
-                this.state = State.RAISED_STANDBY;
-
-            }
-
-        }
 
     }
 
-    public void moveHooks() {
-
-        this.leftArm.setPosition(LEFT_UP_ARM_POSITION);
-        this.rightArm.setPosition(RIGHT_UP_ARM_POSITION);
-
-    }
 
     public void raiseHooks() {
 
-        if(this.state == State.STANDBY)
-            this.state = State.RAISING_HOOKS;
+        if(this.state == State.STANDBY) {
+            this.leftArm.setPosition(LEFT_ARM_POSITION);
+            this.rightArm.setPosition(RIGHT_ARM_POSITION);
+
+            this.state = State.RAISED_STANDBY;
+        }
+
+
+    }
+
+    public void clearPole() {
+
+        if(this.state != State.STANDBY) {
+            this.leftArm.setPosition(LEFT_ARM_UP_POSITION);
+            this.rightArm.setPosition(RIGHT_ARM_UP_POSITION);
+        }
 
     }
 
